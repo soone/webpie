@@ -13,15 +13,44 @@ class Webpie
 	public function __constuct($conf)
 	{
 		spl_autoload_register(array(__CLASS__, 'autoload'));
-		$this->envConf = new Webpie_Config();
+		$this->envConf = Webpie_Config::getInstance();
 		$this->envConf->import($conf);
 
 		//将envConf对象设置为全局可调用
-		//setenv($this->envConf);
+		putenv("WpConf = $this->envConf");
 	}
 
+	/**
+	* @name start 应用启动
+	*
+	* @returns   
+	*/
 	public function start()
 	{
+		$reqUri = substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '?'));
+		$url = $this->envConf->get('custom->url');
+		$handler = NULL;
+		$handler_hooks = NULL;
+		foreach($url as $u)
+		{
+			$regx = strtolower($u[0]);
+
+			if($regx[0] != '^')
+				$regx = '^' . $regx;
+
+			if($regx[strlen($regx) - 1] != '$')
+				$regx = $regx . '$';
+
+			if(preg_match($regx, $reqUri) === True)
+			{
+				$handler = $u[1];
+				//预置handler的钩子，会在handler初始化时触发
+				!empty($u[2]) ? $handler_hooks = $u[2] : '';
+				$this->handler($handler, $handler_hooks);
+			}
+		}
+
+		return Webpie_Redirect::see(NULL, 404);
 	}
 
 	/**
@@ -47,6 +76,7 @@ class Webpie
 			'webpie_dal' => 'dal/dal.php',
 			'webpie_dal_exception' => 'dal/dal.php',
 			'webpie_exception' => 'webpie.php',
+			'webpie_redirect' => 'util/redirect.php',
 		);
 
 		$path = dirname(__FILE__) . '/webpie/';
