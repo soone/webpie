@@ -1,4 +1,6 @@
 <?php
+class Webpie_Exception extends Exception{}
+
 class Webpie
 {
 	public $envConf = NULL;
@@ -50,7 +52,7 @@ class Webpie
 			}
 		}
 
-		return Webpie_Redirect::see(NULL, 404);
+		return Webpie_Redirect::seeBy404(NULL);
 	}
 
 	/**
@@ -91,5 +93,3 @@ class Webpie
 		}
 	}
 }
-
-class Webpie_Exception extends Exception{}
