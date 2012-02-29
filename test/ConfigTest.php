@@ -25,22 +25,27 @@ class ConfigTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	* @dataProvider getProvider
 	*/
-	public function testGet($var, $val)
+	//public function testGet($var, $val)
+	public function testGet()
 	{
 		//$this->cObj->set('test', array('x' => 1, 'y' => array('t' => 2), 'z' => array(3)));
 		$this->cObj->set('test->o', 1);
+		$this->cObj->set('test->o->b', 2);
 		$this->cObj->set('test->p->q', 2);
-		$this->assertEquals($this->cObj->get($var), $val);
+		$this->cObj->set('test->p->x', 3);
+		//$this->assertEquals($this->cObj->get($var), $val);
 
 		//$this->cObj->set('test->o->p', 3);
 		//$this->assertEquals($this->cObj->get('test->o'), 1);
-		//$this->assertEquals($this->cObj->get('test->o->p'), 3);
+		//$this->assertEquals($this->cObj->get('test->p->q'), 2);
+		//$this->assertEquals($this->cObj->get('test->p->x'), 3);
+		$this->assertEquals($this->cObj->get('test->o->b'), 2);
 	}
 
 	public function getProvider()
 	{
+	//* @dataProvider getProvider
 		return array(
 			array('author', 'soone'),
 			array('email', 'fengyue15@gmail.com'),

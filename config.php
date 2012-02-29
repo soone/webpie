@@ -77,20 +77,35 @@ class Webpie_Config
 		if(property_exists($this, $arrayVar[0]))
 		{
 			$tempVal = $this->$arrayVar[0];
-			$firstVar = $arrayVar[0];
+			$lastVar = NULL;
 			for($i = 1; $i < $vars; $i++)
 			{
-				if($i + 1 == $vars)
-					$tempVal[$arrayVar[$i]] = $val;
-				else if(isset($tempVal[$arrayVar[$i]]))
-					continue;
+				if(isset($tempVal[$arrayVar[$i]]) && $lastVar == NULL)
+				{
+					$i + 1 == $vars ? $tempVal[$arrayVar[$i]] = $val : '';
+					//$tempVal[$arrayVar[$i]] = (array)$tempVal[$arrayVar[$i]];
+					$lastVar = $arrayVar[$i];
+				}
+				else if(isset((array)$tempVal[$lastVar][$arrayVar[$i]]))
+				{
+					$i + 1 == $vars ? $tempVal[$lastVar][$arrayVar[$i]] = $val : '';
+					$lastVar = $arrayVar[$i];
+					//$tempVal[$lastVar][$arrayVar[$i]] = (array)$tempVal[$lastVar][$arrayVar[$i]];
+				}
+				else if($lastVar == NULL)
+				{
+					$tempVal[$arrayVar[$i]] = $i + 1 == $vars ? $val : array();
+					$lastVar = $arrayVar[$i];
+				}
 				else
 				{
-					$tempVal = array($arrayVar[$i] => array());
+					$tempVal[$lastVar][$arrayVar[$i]] = $i + 1 == $vars ? $val : array();
+					$lastVar = $arrayVar[$i];
 				}
 			}
+			var_dump($tempVal);
 
-			$this->$firstVar = $tempVal;
+			$this->$arrayVar[0] = $tempVal;
 		}
 		else
 		{
