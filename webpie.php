@@ -30,9 +30,10 @@ class Webpie
 	public function start()
 	{
 		$reqUri = substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '?'));
-		$url = $this->envConf->get('custom->url');
+		$url = $this->envConf->get('url');
 		$handler = NULL;
 		$handler_hooks = NULL;
+		$handlerSuccess = false;
 		foreach($url as $u)
 		{
 			$regx = strtolower($u[0]);
@@ -45,14 +46,34 @@ class Webpie
 
 			if(preg_match($regx, $reqUri) === True)
 			{
+				$handlerSuccess = true;
 				$handler = $u[1];
 				//预置handler的钩子，会在handler初始化时触发
-				!empty($u[2]) ? $handler_hooks = $u[2] : '';
-				$this->handler($handler, $handler_hooks);
+				!empty($u[2]) ? $handlerHooks = $u[2] : '';
+				$this->handler($handler, $handlerHooks);
 			}
 		}
 
-		return Webpie_Redirect::seeBy404(NULL);
+		if($handlerSuccess == false)
+		{
+			Webpie_Redirect::seeBy404(NULL);
+			return false;
+		}
+
+		return true;
+	}
+	
+	/**
+	* @name handler 
+	*
+	* @param $handler
+	* @param $handlerHooks
+	*
+	* @returns   
+	*/
+	public function handler($handler, $handlerHooks = NULL)
+	{
+		return true;
 	}
 
 	/**
