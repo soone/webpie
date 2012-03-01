@@ -15,6 +15,8 @@ class Webpie
 	public function __constuct($conf)
 	{
 		spl_autoload_register(array(__CLASS__, 'autoload'));
+		//set_error_handler();
+		//set_exception_handler();
 		$this->envConf = Webpie_Config::getInstance();
 		$this->envConf->import($conf);
 
