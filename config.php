@@ -8,6 +8,7 @@ class Webpie_Config
 	private $email = 'fengyue15@gmail.com';
 	private $ver = '0.1';
 	private $date = '2012-02-20';
+	public $custom = array();
 
 	private static $instance = NULL;
 	private function __construct()
@@ -26,8 +27,27 @@ class Webpie_Config
 		return self::$instance;
 	}
 
+	/**
+	* @name import 用于配置文件的导入
+	*
+	* @param $conf 可以是导入的数组或者是配置文件的绝对地址
+	*
+	* @returns   
+	*/
 	public function import($conf = NULL)
 	{
+		if(is_array($conf))
+		{
+			$this->custom = array_merge($this->custom, $conf);
+		}
+		else if(is_file($conf))
+		{
+			$confCtx = require($conf);
+			$this->custom = array_merge($this->custom, $confCtx);
+		}
+		else
+			return false;
+
 		return true;
 	}
 
@@ -41,21 +61,19 @@ class Webpie_Config
 	public function get($var)
 	{
 		$arrayVar = explode('->', $var);
-		if(property_exists($this, $arrayVar[0]))
+		if(property_exists($this, $arrayVar[0]) || array_key_exists($arrayVar[0], $this->custom))
 		{
+			$res = property_exists($this, $arrayVar[0]) ? $this->$arrayVar[0] : $this->custom[$arrayVar[0]];
 			if(count($arrayVar) > 1)
 			{
-				$res = $this->$arrayVar[0];
 				unset($arrayVar[0]);
 				foreach($arrayVar as $strVar)
 				{
 					$res = $res[$strVar];
 				}
-
-				return $res;
 			}
-			else
-				return $this->$arrayVar[0];
+
+			return $res;
 		}
 		else
 			throw new Webpie_Config_Exception('配置属性不存在');
@@ -82,15 +100,17 @@ class Webpie_Config
 			{
 				if(isset($tempVal[$arrayVar[$i]]) && $lastVar == NULL)
 				{
+					if(!is_array($tempVal[$arrayVar[$i]]))
+						$tempVal[$arrayVar[$i]] = array();
 					$i + 1 == $vars ? $tempVal[$arrayVar[$i]] = $val : '';
-					//$tempVal[$arrayVar[$i]] = (array)$tempVal[$arrayVar[$i]];
 					$lastVar = $arrayVar[$i];
 				}
-				else if(isset((array)$tempVal[$lastVar][$arrayVar[$i]]))
+				else if(isset($tempVal[$lastVar][$arrayVar[$i]]))
 				{
+					if(!is_array($tempVal[$lastVar][$arrayVar[$i]]))
+						$tempVal[$lastVar][$arrayVar[$i]] = array();
 					$i + 1 == $vars ? $tempVal[$lastVar][$arrayVar[$i]] = $val : '';
 					$lastVar = $arrayVar[$i];
-					//$tempVal[$lastVar][$arrayVar[$i]] = (array)$tempVal[$lastVar][$arrayVar[$i]];
 				}
 				else if($lastVar == NULL)
 				{
@@ -103,7 +123,6 @@ class Webpie_Config
 					$lastVar = $arrayVar[$i];
 				}
 			}
-			var_dump($tempVal);
 
 			$this->$arrayVar[0] = $tempVal;
 		}
