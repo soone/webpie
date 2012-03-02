@@ -1,6 +1,5 @@
 <?php
 require '../webpie.php';
-require '../config.php';
 class ConfigTest extends PHPUnit_Framework_TestCase
 {
 	public $cObj = NULL;
@@ -82,5 +81,7 @@ class ConfigTest extends PHPUnit_Framework_TestCase
 		$this->cObj->set('test->p->x', 3);
 		$this->assertEquals($this->cObj->get('test->p->q'), 2);
 		$this->assertEquals($this->cObj->get('test->p->x'), 3);
+
+		$this->assertEquals($this->cObj->get('fsdaf', ''), '');
 	}
 }

@@ -58,7 +58,7 @@ class Webpie_Config
 	*
 	* @returns   
 	*/
-	public function get($var)
+	public function get($var, $val = NULL)
 	{
 		$arrayVar = explode('->', $var);
 		if(property_exists($this, $arrayVar[0]) || array_key_exists($arrayVar[0], $this->custom))
@@ -75,6 +75,8 @@ class Webpie_Config
 
 			return $res;
 		}
+		else if($val !== NULL)
+			return $val;
 		else
 			throw new Webpie_Config_Exception('配置属性不存在');
 	}

@@ -12,16 +12,18 @@ class Webpie
 	*
 	* @returns   
 	*/
-	public function __constuct($conf)
+	public function __construct($conf = NULL)
 	{
 		spl_autoload_register(array(__CLASS__, 'autoload'));
 		//set_error_handler();
 		//set_exception_handler();
+		//get_class();
 		$this->envConf = Webpie_Config::getInstance();
 		$this->envConf->import($conf);
 
 		//将envConf对象设置为全局可调用
-		putenv("WpConf = $this->envConf");
+		$_ENV['WpConf'] = $this->envConf;
+		//putenv("WpConf = $this->envConf");
 	}
 
 	/**
@@ -75,7 +77,51 @@ class Webpie
 	*/
 	public function handler($handler, $handlerHooks = NULL)
 	{
-		return true;
+		//事先处理钩子
+		$hooks = $this->envConf->get('hooks', '');//是否存在全局的钩子
+		if($hooks && $handlerHooks)
+			$handlerHooks = array_merge((array)$hooks, (array)$handlerHooks);
+		else if($hooks)
+			$handlerHooks = $hooks;
+
+		if($handlerHooks)
+		{
+			$handlerHooks = (array)$handlerHooks;
+			foreach($handlerHooks as $hook)
+			{
+				if(empty($hook)) continue;
+
+				if(is_array($hook))
+				{
+					$hookCls = $hook[0];
+					$hookVar = empty($hook[1]) ? NULL : $hook[1];
+				}
+				else
+				{
+					$hookCls = $hook;
+					$hookVar = NULL;
+				}
+
+				$hookObj = new $hookCls();
+				$hookObj->setup($hookVar);
+			}
+		}
+
+		if(strpos($handler, '->') !== false)//动态调用触发器
+		{
+			$handlers = explode('->', $handler);
+			$this->envConf->set('router', array('control' => $handlers[0], 'action' => $handlers[1]));
+			$objHandler = new $handlers[0];
+			return $objHandler->$handlers[1]();
+		}
+		else if(strpos($handler, '::') !== false)//静态调用触发器
+		{
+			$handlers = explode('::', $handler);
+			$this->envConf->set('router', array('control' => $handlers[0], 'action' => $handlers[1], 'type' => 1));
+			return $handlers[0]::$handlers[1]();
+		}
+		else
+			throw new Webpie_Exception('无法调用对应触发器');
 	}
 
 	/**
@@ -104,15 +150,20 @@ class Webpie
 			'webpie_redirect' => 'util/redirect.php',
 		);
 
-		$path = dirname(__FILE__) . '/webpie/';
 		$cn = strtolower($class);
 		if(isset($classes[$cn]))
-			require $path . $classes[$cn];
+			require dirname(__FILE__) . DIRECTORY_SEPARATOR . $classes[$cn];
 		else
 		{
-			$file = $path . str_replace('_', DIRECTORY_SEPARATOR, $cn);
+			$file = dirname(__DIR__) . DIRECTORY_SEPARATOR . str_replace('_', DIRECTORY_SEPARATOR, $cn) . '.php';
 			if(is_file($file))
 				require $file;
+			else
+			{
+				$oriFile = $this->envConf->get('projectRoot') . str_replace('_', DIRECTORY_SEPARATOR, $class) . '.php';
+				if(is_file($oriFile))
+					require $oriFile;
+			}
 		}
 	}
 }
