@@ -15,15 +15,13 @@ class Webpie
 	public function __construct($conf = NULL)
 	{
 		spl_autoload_register(array(__CLASS__, 'autoload'));
-		//set_error_handler();
-		//set_exception_handler();
-		//get_class();
+		set_error_handler(array(__CLASS__, 'errorHandler'));
+		set_exception_handler(array(__CLASS__, 'exceptionHandler'));
 		$this->envConf = Webpie_Config::getInstance();
 		$this->envConf->import($conf);
 
 		//将envConf对象设置为全局可调用
 		$_ENV['WpConf'] = $this->envConf;
-		//putenv("WpConf = $this->envConf");
 	}
 
 	/**
@@ -165,5 +163,64 @@ class Webpie
 					require $oriFile;
 			}
 		}
+	}
+
+	/**
+	* @name errorHandler 
+	*
+	* @param $errno
+	* @param $errstr
+	* @param $errfile
+	* @param $errline
+	*
+	* @returns   
+	*/
+	public function errorHandler($errno, $errstr, $errfile, $errline)
+	{
+	    if(!(error_reporting() & $errno)) return;
+		$fmtMsg = '%s:[%d] %s on line %d in file %s';
+		$envConf = $this->envConf;
+		$dealMsg = function() use (&$errMsg, $envConf)
+		{
+			$flag = "\n";
+			if($envConf->get('debug') == true)
+			{
+				empty($_SERVER['SERVER_SOFTWARE']) ? '' : $flag = '<br />';
+				echo $errMsg , $flag;
+			}
+			else
+			{
+				//记录操作
+			}
+		};
+
+		switch($errno)
+		{
+			case E_USER_ERROR:
+				$errMsg = sprintf($fmtMsg, 'My ERROR', $errno, $errstr, $errline, $errfile);
+				$dealMsg();
+				exit(1);
+				break;
+
+			case E_USER_WARNING:
+				$errMsg = sprintf($fmtMsg, 'My WARNING', $errno, $errstr, $errline, $errfile);
+				$dealMsg();
+				break;
+
+			case E_USER_NOTICE:
+				$errMsg = sprintf($fmtMsg, 'My NOTICE', $errno, $errstr, $errline, $errfile);
+				$dealMsg();
+				break;
+
+			default:
+				$errMsg = sprintf($fmtMsg, 'Unknown error type', $errno, $errstr, $errline, $errfile);
+				$dealMsg();
+				break;
+		}
+	}
+
+	public function exceptionHandler()
+	{
+		//get_class();
 	}
 }

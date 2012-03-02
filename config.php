@@ -8,6 +8,7 @@ class Webpie_Config
 	private $email = 'fengyue15@gmail.com';
 	private $ver = '0.1';
 	private $date = '2012-02-20';
+	private $debug = true;
 	public $custom = array();
 
 	private static $instance = NULL;
@@ -55,6 +56,7 @@ class Webpie_Config
 	* @name get 取得相应的配置属性
 	*
 	* @param $var 对应属性名称
+	* @param $val 该参数有值，则当var属性不存在的时候自动返回该参数值
 	*
 	* @returns   
 	*/
@@ -63,7 +65,8 @@ class Webpie_Config
 		$arrayVar = explode('->', $var);
 		if(property_exists($this, $arrayVar[0]) || array_key_exists($arrayVar[0], $this->custom))
 		{
-			$res = property_exists($this, $arrayVar[0]) ? $this->$arrayVar[0] : $this->custom[$arrayVar[0]];
+			//优先判断用户的配置
+			$res = array_key_exists($arrayVar[0], $this->custom) ? $this->custom[$arrayVar[0]] : $this->$arrayVar[0];
 			if(count($arrayVar) > 1)
 			{
 				unset($arrayVar[0]);
