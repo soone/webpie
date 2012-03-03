@@ -66,6 +66,8 @@ class ConfigTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals($this->cObj->get('author'), 'soone');
 		$this->assertEquals($this->cObj->get('email'), 'fengyue15@gmail.com');
 		$this->assertEquals($this->cObj->get('name'), 'Webpie');
+		$this->assertEquals($this->cObj->get('wpRoot'), dirname(__DIR__));
+		$this->assertEquals($this->cObj->get('log'), dirname(__DIR__) . DIRECTORY_SEPARATOR . 'logs' . DIRECTORY_SEPARATOR . 'error.log');
 
 		$this->cObj->set('test', array('x' => 1, 'y' => array('t' => 2), 'z' => array(3)));
 		$this->assertEquals($this->cObj->get('test->x'), 1);
@@ -83,5 +85,13 @@ class ConfigTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals($this->cObj->get('test->p->x'), 3);
 
 		$this->assertEquals($this->cObj->get('fsdaf', ''), '');
+	}
+
+	public function testGetReqWith()
+	{
+		$_SERVER['HTTP_X_REQUESTED_WITH'] = 'xmlhttprequest';
+		$this->assertTrue($this->cObj->getReqWith());
+		$_SERVER['HTTP_X_REQUESTED_WITH'] = '';
+		$this->assertFalse($this->cObj->getReqWith());
 	}
 }

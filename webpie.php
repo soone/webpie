@@ -21,7 +21,7 @@ class Webpie
 		$this->envConf->import($conf);
 
 		//将envConf对象设置为全局可调用
-		$_ENV['WpConf'] = $this->envConf;
+		$_ENV['envConf'] = $this->envConf;
 	}
 
 	/**
@@ -58,7 +58,7 @@ class Webpie
 
 		if($handlerSuccess == false)
 		{
-			Webpie_Redirect::seeBy404(NULL);
+			Webpie_Redirect::seeBy404($this->envConf->get('go404', NULL));
 			return false;
 		}
 
@@ -145,7 +145,10 @@ class Webpie
 			'webpie_dal' => 'dal/dal.php',
 			'webpie_dal_exception' => 'dal/dal.php',
 			'webpie_exception' => 'webpie.php',
+			'webpie_util_exception' => 'util/exception.php',
 			'webpie_redirect' => 'util/redirect.php',
+			'webpie_logs' => 'util/logs.php',
+			'webpie_file' => 'util/file.php',
 		);
 
 		$cn = strtolower($class);
@@ -178,49 +181,65 @@ class Webpie
 	public function errorHandler($errno, $errstr, $errfile, $errline)
 	{
 	    if(!(error_reporting() & $errno)) return;
-		$fmtMsg = '%s:[%d] %s on line %d in file %s';
-		$envConf = $this->envConf;
-		$dealMsg = function() use (&$errMsg, $envConf)
-		{
-			$flag = "\n";
-			if($envConf->get('debug') == true)
-			{
-				empty($_SERVER['SERVER_SOFTWARE']) ? '' : $flag = '<br />';
-				echo $errMsg , $flag;
-			}
-			else
-			{
-				//记录操作
-			}
-		};
+		$fmtMsg = '%s:[%d] %s in file %s on line %d' . $_ENV['envConf']->get('logStage');
 
 		switch($errno)
 		{
 			case E_USER_ERROR:
-				$errMsg = sprintf($fmtMsg, 'My ERROR', $errno, $errstr, $errline, $errfile);
-				$dealMsg();
+				$errMsg = sprintf($fmtMsg, 'My ERROR', $errno, $errstr, $errfile, $errline);
+				self::msgHandler($errMsg);
 				exit(1);
 				break;
 
 			case E_USER_WARNING:
-				$errMsg = sprintf($fmtMsg, 'My WARNING', $errno, $errstr, $errline, $errfile);
-				$dealMsg();
+				$errMsg = sprintf($fmtMsg, 'My WARNING', $errno, $errstr, $errfile, $errline);
+				self::msgHandler($errMsg);
 				break;
 
 			case E_USER_NOTICE:
-				$errMsg = sprintf($fmtMsg, 'My NOTICE', $errno, $errstr, $errline, $errfile);
-				$dealMsg();
+				$errMsg = sprintf($fmtMsg, 'My NOTICE', $errno, $errstr, $errfile, $errline);
+				self::msgHandler($errMsg);
 				break;
 
 			default:
-				$errMsg = sprintf($fmtMsg, 'Unknown error type', $errno, $errstr, $errline, $errfile);
-				$dealMsg();
+				$errMsg = sprintf($fmtMsg, 'Unknown error type', $errno, $errstr, $errfile, $errline);
+				self::msgHandler($errMsg);
 				break;
 		}
 	}
 
-	public function exceptionHandler()
+	/**
+	* @name exceptionHandler 处理异常
+	*
+	* @param $e
+	*
+	* @returns   
+	*/
+	public function exceptionHandler($e)
 	{
-		//get_class();
+		$exceptionName = get_class($e);
+		$fmtMsg = 'Exception(%s):[%s] %s in file %s on line %d' . $_ENV['envConf']->get('logStage');
+		$errMsg = sprintf($fmtMsg, $exceptionName, $e->getCode(), $e->getMessage(), $e->getFile(), $e->getLine());
+		return self::msgHandler($errMsg);
+	}
+
+	/**
+	* @name msgHandler 异常和错误消息的处理
+	*
+	* @param $msg
+	*
+	* @returns   
+	*/
+	private static function msgHandler($msg)
+	{
+		if($_ENV['envConf']->get('debug') === true)
+			echo $msg;
+		else
+		{
+			//记录操作
+			$logs = new Webpie_logs;
+			$logs->record($msg, $_ENV['envConf']->get('log'));
+			Webpie_Redirect::seeBy50x($_ENV['envConf']->get('go50x', NULL));
+		}
 	}
 }

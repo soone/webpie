@@ -10,10 +10,15 @@ class Webpie_Config
 	private $date = '2012-02-20';
 	private $debug = true;
 	public $custom = array();
+	public $wpRoot = __DIR__;
+	public $log;
+	public $logStage = "\n";
 
 	private static $instance = NULL;
 	private function __construct()
-	{}
+	{
+		$this->log = $this->wpRoot . DIRECTORY_SEPARATOR . 'logs' . DIRECTORY_SEPARATOR . 'error.log';
+	}
 
 	/**
 	* @name getInstance 单件模式返回config对象
@@ -143,5 +148,21 @@ class Webpie_Config
 		}
 
 		return true;
+	}
+
+	/**
+	* @name getReqWith 判断请求是否是ajax
+	*
+	* @returns   
+	*/
+	public function getReqWith()
+	{
+		if(isset($_SERVER['HTTP_X_REQUESTED_WITH']) && 
+			strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest')
+			$this->reqWithAjax = true;
+		else
+			$this->reqWithAjax = false;
+
+		return $this->reqWithAjax;
 	}
 }
