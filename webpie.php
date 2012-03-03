@@ -148,7 +148,6 @@ class Webpie
 			'webpie_util_exception' => 'util/exception.php',
 			'webpie_redirect' => 'util/redirect.php',
 			'webpie_logs' => 'util/logs.php',
-			'webpie_file' => 'util/file.php',
 		);
 
 		$cn = strtolower($class);
@@ -237,8 +236,8 @@ class Webpie
 		else
 		{
 			//记录操作
-			$logs = new Webpie_logs;
-			$logs->record($msg, $_ENV['envConf']->get('log'));
+			$logs = new Webpie_logs($_ENV['envConf']->get('log'), 'a');
+			$logs->record($msg);
 			Webpie_Redirect::seeBy50x($_ENV['envConf']->get('go50x', NULL));
 		}
 	}
