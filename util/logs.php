@@ -35,6 +35,11 @@ class Webpie_Logs
 		return true;
 	}
 
+	/**
+	* @name __destruct 
+	*
+	* @returns   
+	*/
 	public function __destruct()
 	{
 		if(is_resource($this->fd))

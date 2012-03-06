@@ -15,8 +15,8 @@ class Webpie
 	public function __construct($conf = NULL)
 	{
 		spl_autoload_register(array(__CLASS__, 'autoload'));
-		set_error_handler(array(__CLASS__, 'errorHandler'));
-		set_exception_handler(array(__CLASS__, 'exceptionHandler'));
+		//set_error_handler(array(__CLASS__, 'errorHandler'));
+		//set_exception_handler(array(__CLASS__, 'exceptionHandler'));
 		$this->envConf = Webpie_Config::getInstance();
 		$this->envConf->import($conf);
 
@@ -148,22 +148,23 @@ class Webpie
 			'webpie_util_exception' => 'util/exception.php',
 			'webpie_redirect' => 'util/redirect.php',
 			'webpie_logs' => 'util/logs.php',
+			'webpie_captcha' => 'util/captcha/captcha.php',
 		);
+
+		global $classMap;
+		if(is_array($classMap) && count($classMap) > 0)
+			$classes = array_merge($classes, $classMap);
 
 		$cn = strtolower($class);
 		if(isset($classes[$cn]))
-			require dirname(__FILE__) . DIRECTORY_SEPARATOR . $classes[$cn];
+		{
+			require ((strpos($cn, 'webpie') !== False) ? dirname(__FILE__) . DIRECTORY_SEPARATOR : $this->envConf->get('projectRoot')) . $classes[$cn];
+		}
 		else
 		{
-			$file = dirname(__DIR__) . DIRECTORY_SEPARATOR . str_replace('_', DIRECTORY_SEPARATOR, $cn) . '.php';
-			if(is_file($file))
-				require $file;
-			else
-			{
-				$oriFile = $this->envConf->get('projectRoot') . str_replace('_', DIRECTORY_SEPARATOR, $class) . '.php';
-				if(is_file($oriFile))
-					require $oriFile;
-			}
+			$oriFile = $this->envConf->get('projectRoot') . str_replace('_', DIRECTORY_SEPARATOR, $class) . '.php';
+			if(is_file($oriFile))
+				require $oriFile;
 		}
 	}
 
