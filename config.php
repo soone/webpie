@@ -17,7 +17,7 @@ class Webpie_Config
 	private static $instance = NULL;
 	private function __construct()
 	{
-		$this->log = $this->wpRoot . DIRECTORY_SEPARATOR . 'logs' . DIRECTORY_SEPARATOR . 'error.log';
+		$this->log = $this->wpRoot . DS . 'logs' . DS . 'error.log';
 	}
 
 	/**

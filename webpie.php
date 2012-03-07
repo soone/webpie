@@ -1,4 +1,6 @@
 <?php
+define('DS', DIRECTORY_SEPARATOR);
+
 class Webpie_Exception extends Exception{}
 
 class Webpie
@@ -15,10 +17,11 @@ class Webpie
 	public function __construct($conf = NULL)
 	{
 		spl_autoload_register(array(__CLASS__, 'autoload'));
-		set_error_handler(array(__CLASS__, 'errorHandler'));
-		set_exception_handler(array(__CLASS__, 'exceptionHandler'));
 		$this->envConf = Webpie_Config::getInstance();
 		$this->envConf->import($conf);
+
+		set_error_handler(array(__CLASS__, 'errorHandler'));
+		set_exception_handler(array(__CLASS__, 'exceptionHandler'));
 
 		//将envConf对象设置为全局可调用
 		$_ENV['envConf'] = $this->envConf;
@@ -142,6 +145,7 @@ class Webpie
 			'webpie_model_exception' => 'model.php',
 			'webpie_render' => 'render/render.php',
 			'webpie_render_exception' => 'render/render.php',
+			'webpie_render_interface' => 'render/interface.php',
 			'webpie_dal' => 'dal/dal.php',
 			'webpie_dal_exception' => 'dal/dal.php',
 			'webpie_exception' => 'webpie.php',
@@ -158,11 +162,11 @@ class Webpie
 		$cn = strtolower($class);
 		if(isset($classes[$cn]))
 		{
-			require ((strpos($cn, 'webpie') !== False) ? dirname(__FILE__) . DIRECTORY_SEPARATOR : $this->envConf->get('projectRoot')) . $classes[$cn];
+			require ((strpos($cn, 'webpie') !== False) ? dirname(__FILE__) . DS : $this->envConf->get('projectRoot')) . $classes[$cn];
 		}
 		else
 		{
-			$oriFile = $this->envConf->get('projectRoot') . str_replace('_', DIRECTORY_SEPARATOR, $class) . '.php';
+			$oriFile = $this->envConf->get('projectRoot') . str_replace('_', DS, $class) . '.php';
 			if(is_file($oriFile))
 				require $oriFile;
 		}

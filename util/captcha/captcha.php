@@ -212,7 +212,7 @@ class Webpie_Captcha
             $fontcfg  = $this->fonts[array_rand($this->fonts)];
 
         // Full path of font file
-        $fontfile = __DIR__ . DIRECTORY_SEPARATOR . $this->resourcesPath . DIRECTORY_SEPARATOR . 'fonts' . DIRECTORY_SEPARATOR . $fontcfg['font'];
+        $fontfile = __DIR__ . DS . $this->resourcesPath . DS . 'fonts' . DS . $fontcfg['font'];
 
         /** Increase font-size for shortest words: 9% for each glyp missing */
         $lettersMissing = $this->maxWordLength-strlen($text);
