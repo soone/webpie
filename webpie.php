@@ -135,6 +135,9 @@ class Webpie
 	*/
 	public function autoload($class = NULL)
 	{
+		if(class_exists($class))
+			return true;
+
 		static $classes = NULL;
 		$classes = array(
 			'webpie_config' => 'config.php',
@@ -153,6 +156,8 @@ class Webpie
 			'webpie_redirect' => 'util/redirect.php',
 			'webpie_logs' => 'util/logs.php',
 			'webpie_captcha' => 'util/captcha/captcha.php',
+			'webpie_inputvalid' => 'util/inputvalid.php',
+			'webpie_valid' => 'util/inputvalid.php',
 		);
 
 		global $classMap;
