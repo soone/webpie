@@ -218,6 +218,22 @@ class Webpie_Valid
 
 		return false;
 	}
+
+	public toValid()
+	{
+		/*public $required = 0;
+		public $msg = NULL;
+		public $expect = NULL;
+		public $length = NULL;
+		public $range = NULL;
+		public $equalTo = NULL;
+		public $default = NULL;
+		public $validVar = NULL;
+		public $alertMsg = NULL;
+		public $varType = 2;//string*/
+		if(empty($this->validVar))
+			return $this->validVar;
+	}
 }
 
 class Webpie_Inputvalid

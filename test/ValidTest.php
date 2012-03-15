@@ -126,6 +126,7 @@ class ValidTest extends PHPUnit_Framework_TestCase
 		$rules = array(
 			'name' => array(
 				'required' => 1,
+				'preExpect' => 'trim',
 				'msg' => 'name is have to fill',
 				'expect' => 'trim',
 				'length' => array(5, 10)
