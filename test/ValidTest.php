@@ -96,22 +96,44 @@ class ValidTest extends PHPUnit_Framework_TestCase
 		$valid = new Webpie_Valid($var['age'], $rule['age']);
 		$valid->toApplyExpect();
 		$this->assertEquals($valid->validVar, call_user_func($rule['age']['expect'], $var['age']));
-		
+		$valid = new Webpie_Valid($var['name1'], $rule['name1']);
+		$valid->toApplyExpect();
+		$this->assertEquals($valid->validVar, call_user_func($rule['name1']['expect'][1], call_user_func($rule['name1']['expect'][0], $var['name1'])));
+		$valid = new Webpie_Valid($var['name2'], $rule['name2']);
+		$valid->toApplyExpect();
+		$this->assertEquals($valid->validVar, call_user_func($rule['name2']['expect'][1], call_user_func($rule['name2']['expect'][0], $var['name2'])));
+	}
+
+	/**
+	* @dataProvider source
+	*
+	* @returns   
+	*/
+	public function testEqualTo($var, $rule)
+	{
+		$valid = new Webpie_Valid($var['password'], $rule['password']);
+		$this->assertTrue($valid->validEqualTo());
+		$valid = new Webpie_Valid($var['repassword'], $rule['repassword']);
+		$this->assertTrue($valid->validEqualTo());
+		$valid = new Webpie_Valid($var['password1'], $rule['password1']);
+		$this->assertFalse($valid->validEqualTo());
 	}
 
 	public function source()
 	{
+		$_GET['repassword'] = '123456';
+		$_GET['password'] = '123456';
 		$rules = array(
 			'name' => array(
 				'required' => 1,
 				'msg' => 'name is have to fill',
-				'expect' => function($v){return trim($v);},
+				'expect' => 'trim',
 				'length' => array(5, 10)
 			),
 			'nick' => array(
 				'required' => 1,
 				'msg' => 'it is need to fill',
-				'expect' => function($v){return trim($v);},
+				'expect' => 'trim',
 				'length' => array(5, 16)
 			),
 			'age' => array(
@@ -130,7 +152,7 @@ class ValidTest extends PHPUnit_Framework_TestCase
 				'msg' => 'password is required',
 				//'expect' => Webpie_Inputvalid::PASSWORD,
 				'length' => array(6, 12),
-				'equalTo' => 'repassword',
+				'equalTo' => $_GET['repassword'],
 			),
 			'repassword' => array(
 				'required' => 1,
@@ -142,7 +164,7 @@ class ValidTest extends PHPUnit_Framework_TestCase
 				'msg' => 'password is required',
 				//'expect' => Webpie_Inputvalid::PASSWORD,
 				'length' => array(8, 12),
-				'equalTo' => 'repassword',
+				'equalTo' => $_GET['repassword'],
 			),
 			'truename' => array(
 				'required' => 0,
@@ -205,6 +227,19 @@ class ValidTest extends PHPUnit_Framework_TestCase
 			'age4' => array(
 				'range' => array('test', 't2', 4),
 			),
+			'name1' => array(
+				'required' => 1,
+				'msg' => 'name is have to fill',
+				//'expect' => function($v){return htmlspecialchars(trim($v));},
+				'expect' => array('trim', 'htmlspecialchars'),
+				'length' => array(5, 10)
+			),
+			'name2' => array(
+				'required' => 1,
+				'msg' => 'name is have to fill',
+				'expect' => array(function($v){return trim($v);}, function($v){return addslashes($v);}),
+				'length' => array(5, 10)
+			),
 		);
 
 		$vars = array(
@@ -221,12 +256,14 @@ class ValidTest extends PHPUnit_Framework_TestCase
 			'phone' => '13774693800',
 			'hobby' => array(1, 2, 3, 5, 6, 4),
 			'birthdate' => '1990-02-20',
-			'password1' => '123456',
+			'password1' => '1234561',
 			'default1' => '',
 			'age1' => 1,
 			'age2' => 'test',
 			'age3' => 10,
 			'age4' => 't1',
+			'name1' => '<script>test</script>',
+			'name2' => 'test"addslaish<html>',
 		);
 
 		return array(

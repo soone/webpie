@@ -171,7 +171,7 @@ class Webpie
 		}
 		else
 		{
-			$oriFile = $this->envConf->get('projectRoot') . str_replace('_', DS, $class) . '.php';
+			$oriFile = $this->envConf->get('projectRoot', './') . str_replace('_', DS, $class) . '.php';
 			if(is_file($oriFile))
 				require $oriFile;
 		}
