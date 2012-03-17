@@ -88,19 +88,19 @@ class ValidTest extends PHPUnit_Framework_TestCase
 	public function testToApplyExpect($var, $rule)
 	{
 		$valid = new Webpie_Valid($var['name'], $rule['name']);
-		$valid->toApplyExpect();
+		$valid->toApplyExpect($valid->expect);
 		$this->assertEquals($valid->validVar, call_user_func($rule['name']['expect'], $var['name']));
 		$valid = new Webpie_Valid($var['nick'], $rule['nick']);
-		$valid->toApplyExpect();
+		$valid->toApplyExpect($valid->expect);
 		$this->assertEquals($valid->validVar, call_user_func($rule['nick']['expect'], $var['nick']));
 		$valid = new Webpie_Valid($var['age'], $rule['age']);
-		$valid->toApplyExpect();
+		$valid->toApplyExpect($valid->expect);
 		$this->assertEquals($valid->validVar, call_user_func($rule['age']['expect'], $var['age']));
 		$valid = new Webpie_Valid($var['name1'], $rule['name1']);
-		$valid->toApplyExpect();
+		$valid->toApplyExpect($valid->expect);
 		$this->assertEquals($valid->validVar, call_user_func($rule['name1']['expect'][1], call_user_func($rule['name1']['expect'][0], $var['name1'])));
 		$valid = new Webpie_Valid($var['name2'], $rule['name2']);
-		$valid->toApplyExpect();
+		$valid->toApplyExpect($valid->expect);
 		$this->assertEquals($valid->validVar, call_user_func($rule['name2']['expect'][1], call_user_func($rule['name2']['expect'][0], $var['name2'])));
 	}
 
@@ -119,6 +119,47 @@ class ValidTest extends PHPUnit_Framework_TestCase
 		$this->assertFalse($valid->validEqualTo());
 	}
 
+	/**
+	* @dataProvider source
+	*
+	* @returns   
+	*/
+	public function testToValid($var, $rule)
+	{
+		$valid = new Webpie_Valid($var['name'], $rule['name']);
+		$this->assertTrue($valid->toValid());
+		$valid = new Webpie_Valid($var['age'], $rule['age']);
+		$this->assertTrue($valid->toValid());
+		$valid = new Webpie_Valid($var['email'], $rule['email']);
+		$this->assertTrue($valid->toValid());
+		$valid = new Webpie_Valid($var['password'], $rule['password']);
+		$this->assertTrue($valid->toValid());
+		$valid = new Webpie_Valid($var['repassword'], $rule['repassword']);
+		$this->assertTrue($valid->toValid());
+		$valid = new Webpie_Valid($var['truename'], $rule['truename']);
+		$this->assertTrue($valid->toValid());
+		$valid = new Webpie_Valid($var['desc'], $rule['desc']);
+		$this->assertTrue($valid->toValid());
+		$valid = new Webpie_Valid($var['homepage'], $rule['homepage']);
+		$this->assertTrue($valid->toValid());
+		$valid = new Webpie_Valid($var['zip'], $rule['zip']);
+		$this->assertTrue($valid->toValid());
+		$valid = new Webpie_Valid($var['tel'], $rule['tel']);
+		$this->assertTrue($valid->toValid());
+		$valid = new Webpie_Valid($var['phone'], $rule['phone']);
+		$this->assertTrue($valid->toValid());
+		$valid = new Webpie_Valid($var['hobby'], $rule['hobby']);
+		$this->assertTrue($valid->toValid());
+		$valid = new Webpie_Valid($var['birthdate'], $rule['birthdate']);
+		$this->assertTrue($valid->toValid());
+		$valid = new Webpie_Valid($var['nick'], $rule['nick']);
+		$this->assertFalse($valid->toValid());
+		$valid = new Webpie_Valid($var['expectTest'], $rule['expectTest']);
+		$this->assertTrue($valid->toValid());
+		$valid = new Webpie_Valid($var['expectTest1'], $rule['expectTest1']);
+		$this->assertFalse($valid->toValid());
+	}
+
 	public function source()
 	{
 		$_GET['repassword'] = '123456';
@@ -128,7 +169,6 @@ class ValidTest extends PHPUnit_Framework_TestCase
 				'required' => 1,
 				'preExpect' => 'trim',
 				'msg' => 'name is have to fill',
-				'expect' => 'trim',
 				'length' => array(5, 10)
 			),
 			'nick' => array(
@@ -241,6 +281,16 @@ class ValidTest extends PHPUnit_Framework_TestCase
 				'expect' => array(function($v){return trim($v);}, function($v){return addslashes($v);}),
 				'length' => array(5, 10)
 			),
+			'expectTest' => array(
+				'msg' => 'expectTest is wrong',
+				'length' => array(5, 10),
+				'expect' => 'trim',
+			),
+			'expectTest1' => array(
+				'msg' => 'expectTest is wrong',
+				'preExpect' => 'trim',
+				'length' => array(5, 10),
+			),
 		);
 
 		$vars = array(
@@ -265,6 +315,8 @@ class ValidTest extends PHPUnit_Framework_TestCase
 			'age4' => 't1',
 			'name1' => '<script>test</script>',
 			'name2' => 'test"addslaish<html>',
+			'expectTest' => ' test ',
+			'expectTest1' => ' test ',
 		);
 
 		return array(

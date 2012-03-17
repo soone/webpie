@@ -4,6 +4,7 @@ class Webpie_Valid
 	public $required = 0;
 	public $msg = NULL;
 	public $expect = NULL;
+	public $preExpect = NULL;
 	public $length = NULL;
 	public $range = NULL;
 	public $equalTo = NULL;
@@ -32,25 +33,29 @@ class Webpie_Valid
 		array_key_exists('equalTo', $rule) ? $this->equalTo = $rule['equalTo'] : '';
 		array_key_exists('msg', $rule) ? $this->msg = $rule['msg'] : '';
 		array_key_exists('default', $rule) ? $this->default = $rule['default'] : '';
+		array_key_exists('preExpect', $rule) ? $this->preExpect = $this->setExpect($rule['preExpect']) : '';
+		array_key_exists('expect', $rule) ? $this->expect = $this->setExpect($rule['expect']) : '';
+	}
 
-		if(array_key_exists('expect', $rule))
+	protected function setExpect($expect)
+	{
+		$theExpect = NULL;
+		if(is_callable($expect))
+			$theExpect = $expect;
+		else if(is_array($expect))
 		{
-			if(is_callable($rule['expect']))
-				$this->expect = $rule['expect'];
-			else if(is_array($rule['expect']))
+			foreach($expect as $exp)
 			{
-				foreach($rule['expect'] as $exp)
-				{
-					if(!is_callable($exp))
-						throw new Webpie_Util_Exception('format error');
-				}
-
-				$this->expect = $rule['expect'];
+				if(!is_callable($exp))
+					throw new Webpie_Util_Exception('format error');
 			}
-			else
-				throw new Webpie_Util_Exception('format error');
-		}
 
+			$theExpect = $expect;
+		}
+		else
+			throw new Webpie_Util_Exception('format error');
+
+		return $theExpect;
 	}
 
 	/**
@@ -84,9 +89,6 @@ class Webpie_Valid
 	*/
 	public function validLength()
 	{
-		if($this->length == NULL)
-			return true;
-
 		if(count($this->length) == 2)
 		{
 			$min = intval($this->length[0]);
@@ -138,9 +140,6 @@ class Webpie_Valid
 	*/
 	public function validRange()
 	{
-		if($this->range == NULL)
-			return true;
-
 		if(!is_array($this->range) || !($rLen = count($this->range)))
 			throw new Webpie_Util_Exception('format error');
 
@@ -188,20 +187,19 @@ class Webpie_Valid
 	/**
 	* @name toAppExpect 应用对数据的处理
 	*
+	* @param $expect
+	*
 	* @returns   
 	*/
-	public function toApplyExpect()
+	public function toApplyExpect($expect)
 	{
-		if($this->expect == NULL)
-			return true;
-
-		if(is_array($this->expect))
+		if(is_array($expect))
 		{
 			$var = &$this->validVar;
-			return array_walk($this->expect, function($func, $key) use (&$var) {$var = call_user_func($func, $var);});
+			return array_walk($expect, function($func, $key) use (&$var) {$var = call_user_func($func, $var);});
 		}
-		else if($this->expect)
-			$this->validVar = call_user_func($this->expect, $this->validVar);
+		else if($expect)
+			$this->validVar = call_user_func($expect, $this->validVar);
 
 		return true;
 	}
@@ -219,20 +217,53 @@ class Webpie_Valid
 		return false;
 	}
 
-	public toValid()
+	/**
+	* @name toValid 
+	*
+	* @returns   
+	*/
+	public function toValid()
 	{
-		/*public $required = 0;
-		public $msg = NULL;
-		public $expect = NULL;
-		public $length = NULL;
-		public $range = NULL;
-		public $equalTo = NULL;
-		public $default = NULL;
-		public $validVar = NULL;
-		public $alertMsg = NULL;
-		public $varType = 2;//string*/
-		if(empty($this->validVar))
-			return $this->validVar;
+		if($this->isRequired() === false)
+			return false;
+
+		if($this->preExpect && $this->toApplyExpect($this->preExpect) === false)
+			return false;
+
+		if($this->length && $this->validLength() === false)
+			return false;
+
+		if($this->equalTo && $this->validEqualTo() === false)
+			return false;
+
+		if($this->range && $this->validRange() === false)
+			return false;
+
+		if($this->expect && $this->toApplyExpect($this->expect) === false)
+			return false;
+
+		$this->setDefault();
+		return true;
+	}
+
+	/**
+	* @name getValidVar 
+	*
+	* @returns   
+	*/
+	public function getValidVar()
+	{
+		return $this->validVar;
+	}
+
+	/**
+	* @name getMsg 
+	*
+	* @returns   
+	*/
+	public function getMsg()
+	{
+		return $this->alertMsg;
 	}
 }
 
