@@ -156,8 +156,8 @@ class Webpie
 			'webpie_redirect' => 'util/redirect.php',
 			'webpie_logs' => 'util/logs.php',
 			'webpie_captcha' => 'util/captcha/captcha.php',
-			'webpie_inputvalid' => 'util/inputvalid.php',
-			'webpie_valid' => 'util/inputvalid.php',
+			'webpie_inputs' => 'util/inputs.php',
+			'webpie_valid' => 'util/inputs.php',
 		);
 
 		global $classMap;

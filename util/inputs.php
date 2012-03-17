@@ -199,7 +199,13 @@ class Webpie_Valid
 			return array_walk($expect, function($func, $key) use (&$var) {$var = call_user_func($func, $var);});
 		}
 		else if($expect)
-			$this->validVar = call_user_func($expect, $this->validVar);
+		{
+			$res = call_user_func($expect, $this->validVar);
+			if($res === false)
+				return $res;
+
+			$this->validVar = $res;
+		}
 
 		return true;
 	}
@@ -267,9 +273,127 @@ class Webpie_Valid
 	}
 }
 
-class Webpie_Inputvalid
+class Webpie_Inputs
 {
-	const EMAIL = 1;
-
 	public function __construct(){}
+	public function inputsGet(){}
+	public function inputsPost(){}
+	public function inputsRequest(){}
+	public function inputsCookie(){}
+	public function inputsServer(){}
+	public function inputsEnv(){}
+	public function inputsSession(){}
+
+	public static function validEmail($var)
+	{
+		return filter_var($var, FILTER_VALIDATE_EMAIL);
+	}
+
+	public static function validInt($var)
+	{
+		return filter_var($var, FILTER_VALIDATE_INT);
+	}
+
+	public static function validFloat($var)
+	{
+		return filter_var($var, FILTER_VALIDATE_FLOAT);
+	}
+
+	public static function validIp($var)
+	{
+		return filter_var($var, FILTER_VALIDATE_IP);
+	}
+
+	public static function validUrl($var)
+	{
+		return filter_var($var, FILTER_VALIDATE_URL);
+	}
+
+	public static function validUrlQuery($var)
+	{
+		return filter_var($var, FILTER_VALIDATE_URL, FILTER_FLAG_QUERY_REQUIRED);
+	}
+
+	public static function validUrlPath($var)
+	{
+		return filter_var($var, FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED);
+	}
+
+	public static function validDate($var, $format = 'Y-m-d')
+	{
+		$sTime = strtotime($var);
+		if($sTime === false)
+			return false;
+
+		if(date($format, strtotime($var)) == $var)
+			return $var;
+		else
+			return false;
+	}
+
+	public static function validCnZip($var)
+	{
+		return preg_match('/^[0-9]d{5}$/', $var) ? $var : false;
+	}
+
+	public static function validCnPhone($var)
+	{
+		return preg_match('/^13[0-9]{9}|15[0-9]{9}|18[0-9]{9}$/', $var) ? $var : false;
+	}
+
+	public static function validCnTel($var)
+	{
+		return preg_match('/^((\+)?(0)?86(-)?)?([\d]{3,4}(-)?)?[\d]{7,8}$/', $var) ? $var : false;
+	}
+
+	public static function validCardByLuhm($var)
+	{
+		$cLen = strlen($var);
+		if(!in_array(16, 19))
+			return false;
+
+		$i = 0;
+		$eCo = 0;
+		$aNum = 0;
+		$leftNum = 0;
+		for($i = 0; $i < $cLen-1; $i++)
+		{
+			if($i%2 == 0)
+			{
+				$aNum = $var[$i]*2;
+				if($aNum >= 10)
+				{
+					$temp = strval($aNum);
+					$aNum = $temp[0] + $temp[1];
+				}
+			}
+			else
+				$aNum = intval($var[$i]);
+
+			$eCo += $aNum;
+		}
+
+		$leftNum = $eCo%10;
+		if($leftNum != 0)
+			$endNum = 10 - $leftNum;
+		else
+			$endNum = 0;
+
+		if($endNum != $var[$cLen-1])
+			return false;
+		else
+			return $var;
+	}
+
+	public static function validCnId($var){}
+
+	public static function validCnIdStrict($var)
+	{
+		
+	}
+
+	public static function validComStr($var)
+	{
+		
+	}
 }

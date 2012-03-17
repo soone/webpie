@@ -1,46 +1,42 @@
 <?php
 require '../webpie.php';
-class InputFilterTest extends PHPUnit_Framework_TestCase
+class InputsTest extends PHPUnit_Framework_TestCase
 {
 	public function setUp()
 	{
 		new webpie;
 	}
 
-	public function test__()
+	public function test__(){}
+
+	public function source()
 	{
-		$iv = new Webpie_InputFilter;
-		$iv->filter($vars, $rules);
-		$iv->filterFile($vars, $rules);
-		$iv->filterEmail($vars);
-		$iv->filterInt($vars);
-		$iv->filterFloat($vars);
-		$iv->filterStr($vars, $rules);
-		$iv->filterUrl($vars, $rules);
-		$iv->filterDate($vars, $rules);
-		$iv->filterZip($vars, $rules);
-		$iv->filterIp($vars, $rules);
-		$iv->filterTel($vars, $rules);
-		$iv->filterPhone($vars, $rules);
-		$iv->filterArray($vars, $rules);
-		$iv->filterIsTrue($vars, $rules);
+		$test= array(
+			'cookie' => array(
+				'userName' => array(
+					'required' => 1,
+					'preExpect' => 'trim',
+					'equalTo' => 'soone',
+					'msg' => '请先登录',
+				),
+				'password' => array(
+					'required' => 1,
+					'preExpect' => 'auth_decode',
+					'equalTo' => true,
+					'msg' => '请先登录'
+				),
+				'__webpieRedirect' => './login',
+			),
+			'get' => array(),
+			'post' => array(),
+			'session' => array(),
+			'env' => array(),
+			'request' => array(),
+			'server' => array(),
+			'__webpieRedirect' => './login',
+		);
 	}
 }
-
-$vars = array('name' => 'soone',
-				'age' => 10,
-				'email' => 'fengyue15@15c.com',
-				'password' => '123456',
-				'repassword' => '123456',
-				'truename' => '中文',
-				'desc' => '发的所发第三发的撒肥,fdsafdsa',
-				'homepage' => 'http://www.webpie.com',
-				'zip' => '361000',
-				'tel' => '+860694-8780987',
-				'phone' => '18611740380',
-				'hobby' => array(5, 6, 7, 8, 9),
-				'birthdate' => '1990-09-21',
-);
 
 $rules = array(
 	'name' => array(
