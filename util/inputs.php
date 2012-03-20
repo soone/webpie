@@ -366,7 +366,7 @@ class Webpie_Inputs
 		return $this->inputsHandler($varName);
 	}
 
-	public function getRedirect(&$var)
+	protected function getRedirect(&$var)
 	{
 		$redirect = NULL;
 		if(array_key_exists('__webpieRedirect', $var) && !empty($var['__webpieRedirect']))
@@ -378,7 +378,7 @@ class Webpie_Inputs
 		return $redirect;
 	}
 
-	public function inputsHandler($varName = NULL)
+	protected function inputsHandler($varName = NULL)
 	{
 		if($varName)
 		{
