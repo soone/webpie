@@ -196,13 +196,23 @@ class Webpie_Valid
 		if(is_array($expect))
 		{
 			$var = &$this->validVar;
-			return array_walk($expect, function($func, $key) use (&$var) {$var = call_user_func($func, $var);});
+			$mapFunc = function($func) use (&$var) {$var = call_user_func($func, $var);};
+			$mapRes = array_map($mapFunc, $expect);
+			if(in_array(false, $mapRes))
+			{
+				$this->alertMsg = $this->msg;
+				return false;
+			}
+			//return array_walk($expect, function($func, $key) use (&$var) {$var = call_user_func($func, $var);});
 		}
 		else if($expect)
 		{
 			$res = call_user_func($expect, $this->validVar);
 			if($res === false)
-				return $res;
+			{
+				$this->alertMsg = $this->msg;
+				return false;
+			}
 
 			$this->validVar = $res;
 		}
@@ -275,28 +285,121 @@ class Webpie_Valid
 
 class Webpie_Inputs
 {
+	protected $inputsType = array('Get', 'Post', 'Request', 'Cookie', 'Server', 'Env', 'Session');
+	protected $gRedirect = NULL;
+	protected $gInputs = NULL;
+	protected $sError = NULL;
+	protected $sRedirect = NULL;
+
 	public function __construct(){}
-	public function inputsGet(){}
-	public function inputsPost(){}
-	public function inputsRequest(){}
-	public function inputsCookie(){}
-	public function inputsServer(){}
-	public function inputsEnv(){}
-	public function inputsSession(){}
+	public function inputsValid($var)
+	{
+		$this->gRedirect = $this->getRedirect($var);
+		foreach($var as $key => $val)
+		{
+			if(!in_array($key, $this->inputsType))
+				continue;
+
+			$func = 'inputs' . $key;
+			$this->$key = $val;
+			$this->$func();
+		}
+
+		return $this->inputsHandler();
+	}
+
+	public function inputsGet()
+	{
+		if(empty($this->Get)) return NULL;
+		return $this->inputsFilter($_GET, $this->Get, 'Get');
+	}
+
+	public function inputsPost()
+	{
+		if(empty($this->Post)) return NULL;
+		return $this->inputsFilter($_POST, $this->Post, 'Post');
+	}
+
+	public function inputsRequest()
+	{
+		if(empty($this->Request)) return NULL;
+		return $this->inputsFilter($_REQUEST, $this->Request, 'Request');
+	}
+
+	public function inputsCookie()
+	{
+		if(empty($this->Cookie)) return NULL;
+		return $this->inputsFilter($_COOKIE, $this->Cookie, 'Cookie');
+	}
+
+	public function inputsServer()
+	{
+		if(empty($this->Server)) return NULL;
+		return $this->inputsFilter($_SERVER, $this->Server, 'Server');
+	}
+
+	public function inputsEnv()
+	{
+		if(empty($this->Env)) return NULL;
+		return $this->inputsFilter($_ENV, $this->Env, 'Env');
+	}
+
+	public function inputsSession()
+	{
+		if(empty($this->Session)) return NULL;
+		return $this->inputsFilter($_SESSION, $this->Session, 'Session');
+	}
+
+	public function inputsFilter($var, $rules, $varName)
+	{
+		$this->sRedirect = $this->getRedirect($rules);
+		foreach($rules as $key => $val)
+		{
+			empty($var[$key]) ? $var[$key] = NULL : '';
+			$vObj = new Webpie_Valid($var[$key], $val);
+			if($vObj->toValid() === true)
+				$this->gInputs[$varName][$key] = $vObj->getValidVar();
+			else
+				$this->sError[] = $vObj->getMsg();
+		}
+
+		return $this->inputsHandler($varName);
+	}
+
+	public function getRedirect(&$var)
+	{
+		$redirect = NULL;
+		if(array_key_exists('__webpieRedirect', $var) && !empty($var['__webpieRedirect']))
+		{
+			$redirect = $var['__webpieRedirect'];
+			unset($var['__webpieRedirect']);
+		}
+
+		return $redirect;
+	}
+
+	public function inputsHandler($varName = NULL)
+	{
+		if($varName)
+		{
+			$redirect = $this->sRedirect;
+			$res = $this->gInputs[$varName];
+		}
+		else
+		{
+			$redirect = $this->gRedirect;
+			$res = $this->gInputs;
+		}
+
+		if($redirect && count($this->sError) > 0)
+			Webpie_Redirect::see('200', $redirect, $this->sError);
+		else
+			return $res;
+	}
 
 	public static function validEmail($var)
 	{
 		return filter_var($var, FILTER_VALIDATE_EMAIL);
-	}
-
-	public static function validInt($var)
-	{
-		return filter_var($var, FILTER_VALIDATE_INT);
-	}
-
-	public static function validFloat($var)
-	{
-		return filter_var($var, FILTER_VALIDATE_FLOAT);
 	}
 
 	public static function validIp($var)
@@ -333,12 +436,12 @@ class Webpie_Inputs
 
 	public static function validCnZip($var)
 	{
-		return preg_match('/^[0-9]d{5}$/', $var) ? $var : false;
+		return preg_match('/^[\d]{6}$/', $var) ? $var : false;
 	}
 
 	public static function validCnPhone($var)
 	{
-		return preg_match('/^13[0-9]{9}|15[0-9]{9}|18[0-9]{9}$/', $var) ? $var : false;
+		return preg_match('/^1[3|4|5|8][0-9]{9}$/', $var) ? $var : false;
 	}
 
 	public static function validCnTel($var)
@@ -349,7 +452,7 @@ class Webpie_Inputs
 	public static function validCardByLuhm($var)
 	{
 		$cLen = strlen($var);
-		if(!in_array(16, 19))
+		if(!in_array($cLen, array(16, 19)))
 			return false;
 
 		$i = 0;
@@ -392,8 +495,66 @@ class Webpie_Inputs
 		
 	}
 
-	public static function validComStr($var)
+	public static function validComPass($var, $length = array(6, 20))
 	{
-		
+		return preg_match('/^[\d\w_\-\$!#%\^&\*\(\)\+<>\?\[\]]{' . $length[0] . ',' . $length[1] . '}$/', $var) ? $var : false;
+	}
+
+	/**
+	* @name validComUser 允许中文、英文、数字以及_和-字符，一个中文按照2个字符计算
+	*
+	* @param $var
+	* @param $length
+	*
+	* @returns   
+	*/
+	public static function validComUser($var, $length = array(5, 20))
+	{
+		$gbkLen = Webpie_Inputs::stringLen($var);
+		$utf8Len = Webpie_Inputs::stringLen($var, 1);
+		if($utf8Len > $gbkLen)
+			$length[1] = $length[1] + $utf8Len - $gbkLen;
+
+		return preg_match('/^([\d\w_\-\x80-\xff]{' . $length[0] . ',' . $length[1] . '})?$/si', $var) ? $var : false;
+	}
+
+	/**
+	* @name stringLen 
+	*
+	* @param $var
+	* @param $type 3-gbk(1个中文2个字符) 1-utf8(1个中文3个字符) 2-忽略中文字节长度
+	*
+	* @returns   
+	*/
+	public static function stringLen($var, $type = 3)
+	{
+		$i = 0;
+		$count = 0;
+		$len = strlen($var);
+		while($i < $len)
+		{
+			$chr = ord($var[$i]);
+			$count++;
+			$i++;
+			if($i > $len)
+				break;
+
+			if($chr & 0x80)
+			{
+				$chr <<= 1;
+				while($chr & 0x80)
+				{
+					$i++;
+					$chr <<= 1;
+				}
+
+				if($type == 3)
+					$count++;
+				else if($type == 1)
+					$count += 2;
+			}
+		}
+
+		return $count;
 	}
 }

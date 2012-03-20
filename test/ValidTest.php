@@ -5,6 +5,7 @@ class ValidTest extends PHPUnit_Framework_TestCase
 	public function setUp()
 	{
 		new webpie;
+		date_default_timezone_set('Asia/Chongqing');
 	}
 
 	/**
@@ -136,6 +137,14 @@ class ValidTest extends PHPUnit_Framework_TestCase
 		$this->assertTrue($valid->toValid());
 		$valid = new Webpie_Valid($var['repassword'], $rule['repassword']);
 		$this->assertTrue($valid->toValid());
+		$valid = new Webpie_Valid($var['password2'], $rule['password2']);
+		$this->assertTrue($valid->toValid());
+		$valid = new Webpie_Valid($var['password3'], $rule['password3']);
+		$this->assertFalse($valid->toValid());
+		$valid = new Webpie_Valid($var['password4'], $rule['password4']);
+		$this->assertFalse($valid->toValid());
+		$valid = new Webpie_Valid($var['password5'], $rule['password5']);
+		$this->assertFalse($valid->toValid());
 		$valid = new Webpie_Valid($var['truename'], $rule['truename']);
 		$this->assertTrue($valid->toValid());
 		$valid = new Webpie_Valid($var['desc'], $rule['desc']);
@@ -146,12 +155,34 @@ class ValidTest extends PHPUnit_Framework_TestCase
 		$this->assertTrue($valid->toValid());
 		$valid = new Webpie_Valid($var['tel'], $rule['tel']);
 		$this->assertTrue($valid->toValid());
+		$valid = new Webpie_Valid($var['tel1'], $rule['tel1']);
+		$this->assertFalse($valid->toValid());
+		$valid = new Webpie_Valid($var['tel2'], $rule['tel2']);
+		$this->assertFalse($valid->toValid());
+		$valid = new Webpie_Valid($var['tel3'], $rule['tel3']);
+		$this->assertTrue($valid->toValid());
+		$valid = new Webpie_Valid($var['tel4'], $rule['tel4']);
+		$this->assertTrue($valid->toValid());
+		$valid = new Webpie_Valid($var['tel5'], $rule['tel5']);
+		$this->assertTrue($valid->toValid());
+		$valid = new Webpie_Valid($var['tel5'], $rule['tel5']);
+		$this->assertTrue($valid->toValid());
 		$valid = new Webpie_Valid($var['phone'], $rule['phone']);
+		$this->assertTrue($valid->toValid());
+		$valid = new Webpie_Valid($var['phone1'], $rule['phone1']);
+		$this->assertTrue($valid->toValid());
+		$valid = new Webpie_Valid($var['phone2'], $rule['phone2']);
 		$this->assertTrue($valid->toValid());
 		$valid = new Webpie_Valid($var['hobby'], $rule['hobby']);
 		$this->assertTrue($valid->toValid());
 		$valid = new Webpie_Valid($var['birthdate'], $rule['birthdate']);
 		$this->assertTrue($valid->toValid());
+		$valid = new Webpie_Valid($var['birthdate1'], $rule['birthdate1']);
+		$this->assertTrue($valid->toValid());
+		$valid = new Webpie_Valid($var['birthdate2'], $rule['birthdate2']);
+		$this->assertFalse($valid->toValid());
+		$valid = new Webpie_Valid($var['birthdate3'], $rule['birthdate3']);
+		$this->assertFalse($valid->toValid());
 		$valid = new Webpie_Valid($var['nick'], $rule['nick']);
 		$this->assertFalse($valid->toValid());
 		$valid = new Webpie_Valid($var['expectTest'], $rule['expectTest']);
@@ -187,12 +218,12 @@ class ValidTest extends PHPUnit_Framework_TestCase
 			'email' => array(
 				'required' => 1,
 				'msg' => 'email is required',
-				//'expect' => Webpie_Inputvalid::EMAIL,
+				'expect' => 'Webpie_Inputs::validEmail',
 			),
 			'password' => array(
 				'required' => 1,
 				'msg' => 'password is required',
-				//'expect' => Webpie_Inputvalid::PASSWORD,
+				'expect' => 'Webpie_Inputs::validComPass',
 				'length' => array(6, 12),
 				'equalTo' => $_GET['repassword'],
 			),
@@ -204,39 +235,95 @@ class ValidTest extends PHPUnit_Framework_TestCase
 			'password1' => array(
 				'required' => 1,
 				'msg' => 'password is required',
-				//'expect' => Webpie_Inputvalid::PASSWORD,
+				'expect' => 'Webpie_Inputs::validComPass',
 				'length' => array(8, 12),
 				'equalTo' => $_GET['repassword'],
 			),
+			'password2' => array(
+				'required' => 1,
+				'msg' => 'password is required',
+				'expect' => 'Webpie_Inputs::validComPass',
+				'length' => array(6, 20),
+			),
+			'password3' => array(
+				'required' => 1,
+				'msg' => 'password is required',
+				'expect' => 'Webpie_Inputs::validComPass',
+				'length' => array(6, 12),
+			),
+			'password4' => array(
+				'required' => 1,
+				'msg' => 'password is required',
+				'expect' => 'Webpie_Inputs::validComPass',
+				'length' => array(6, 12),
+			),
+			'password5' => array(
+				'required' => 1,
+				'msg' => 'password is required',
+				'expect' => function($v){return Webpie_Inputs::validComPass($v, array(6, 12));},
+				'length' => array(6, 12),
+			),
 			'truename' => array(
 				'required' => 0,
-				//'expect' => Webpie_Inputvalid::SAFESTR,
+				'expect' => 'Webpie_Inputs::validComUser',
 				'length' => array(5, 10),
 				'msg' => 'truename\'s length must between 5 and 10',
 			),
 			'desc' => array(
 				'required' => 0,
 				'default' => 'there is not desc',
-				//'expect' => Webpie_Inputvalid::HTML,
+				'expect' => 'htmlspecialchars',
 				'length' => array(5, 3000),
 				'msg' => 'content\'s length must between 5 and 3000',
 			),
 			'homepage' => array(
 				'required' => 1,
-				//'expect' => Webpie_Inputvalid::URL,
+				'expect' => 'Webpie_Inputs::validUrl',
 				'msg' => 'url must front be http:// and not empty',
 			),
 			'zip' => array(
 				'required' => 0,
-				//'expect' => Webpie_Inputvalid::ZIP,
+				'expect' => 'Webpie_Inputs::validCnZip',
 			),
 			'tel' => array(
 				'required' => 0,
-				//'expect' => Webpie_Inputvalid::TEL,
+				'expect' => 'Webpie_Inputs::validCnTel',
+			),
+			'tel1' => array(
+				'required' => 0,
+				'expect' => 'Webpie_Inputs::validCnTel',
+			),
+			'tel2' => array(
+				'required' => 0,
+				'expect' => 'Webpie_Inputs::validCnTel',
+			),
+			'tel3' => array(
+				'required' => 0,
+				'expect' => 'Webpie_Inputs::validCnTel',
+			),
+			'tel4' => array(
+				'required' => 0,
+				'expect' => 'Webpie_Inputs::validCnTel',
+			),
+			'tel5' => array(
+				'required' => 0,
+				'expect' => 'Webpie_Inputs::validCnTel',
+			),
+			'tel6' => array(
+				'required' => 0,
+				'expect' => 'Webpie_Inputs::validCnTel',
 			),
 			'phone' => array(
 				'required' => 0,
-				//'expect' => Webpie_Inputvalid::PHONE,
+				'expect' => 'Webpie_Inputs::validCnPhone',
+			),
+			'phone1' => array(
+				'required' => 0,
+				'expect' => 'Webpie_Inputs::validCnPhone',
+			),
+			'phone2' => array(
+				'required' => 0,
+				'expect' => 'Webpie_Inputs::validCnPhone',
 			),
 			'hobby' => array(
 				'required' => 1,
@@ -246,7 +333,22 @@ class ValidTest extends PHPUnit_Framework_TestCase
 			'birthdate' => array(
 				'required' => 1,
 				'msg' => 'please choose your birthdate',
-				//'expect' => Webpie_Inputvalid::BIRTHDATE,
+				'expect' => 'Webpie_Inputs::validDate',
+			),
+			'birthdate1' => array(
+				'required' => 1,
+				'msg' => 'please choose your birthdate',
+				'expect' => function($v){return Webpie_Inputs::validDate($v, 'm/d/Y');},
+			),
+			'birthdate2' => array(
+				'required' => 1,
+				'msg' => 'please choose your birthdate',
+				'expect' => function($v){return Webpie_Inputs::validDate($v, 'm/d/Y');},
+			),
+			'birthdate3' => array(
+				'required' => 1,
+				'msg' => 'please choose your birthdate',
+				'expect' => 'Webpie_Inputs::validDate',
 			),
 			'default1' => array(
 				'required' => 0,
@@ -272,7 +374,6 @@ class ValidTest extends PHPUnit_Framework_TestCase
 			'name1' => array(
 				'required' => 1,
 				'msg' => 'name is have to fill',
-				//'expect' => function($v){return htmlspecialchars(trim($v));},
 				'expect' => array('trim', 'htmlspecialchars'),
 				'length' => array(5, 10)
 			),
@@ -304,11 +405,26 @@ class ValidTest extends PHPUnit_Framework_TestCase
 			'desc' => 'fasfsdaf',
 			'homepage' => 'http://www.caokee.com',
 			'zip' => '361000',
-			'tel' => '0592-878-975',
+			'tel' => '0592-8780975',
+			'tel1' => '0592-878-975',
+			'tel2' => '+86-0592-878-975',
+			'tel3' => '+086-0592-8780975',
+			'tel4' => '086-0592-8780975',
+			'tel5' => '08605928780975',
+			'tel6' => '8605928780975',
 			'phone' => '13774693800',
+			'phone1' => '18611740380',
+			'phone2' => '15860745960',
 			'hobby' => array(1, 2, 3, 5, 6, 4),
 			'birthdate' => '1990-02-20',
+			'birthdate1' => '02/20/1990',
+			'birthdate2' => '02/30/2012',
+			'birthdate3' => 'testt',
 			'password1' => '1234561',
+			'password2' => 't1_-$!#%^&*()<>?+3h',
+			'password3' => ';tefdsf',
+			'password4' => ',f.324jk',
+			'password5' => 'f324jk%$^#fdsafdsfd',
 			'default1' => '',
 			'age1' => 1,
 			'age2' => 'test',
