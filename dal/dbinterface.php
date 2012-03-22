@@ -10,9 +10,9 @@ interface Webpie_Dal_Dbinterface
 {
 	public function dbSetting($setting);
 	public function dbConnect($name);
-	public function setDbObj($obj);
+	public function setCurDbObj($obj);
 	public function setCurTable($table);
-	public function dbCreate($columns, $values);
+	public function dbCreate($columns, $values, $multi = false);
 	public function dbRead($columns, $options = NULL);
 	public function dbUpdate($columns, $values, $where = NULL);
 	public function dbDelete($where = NULL);

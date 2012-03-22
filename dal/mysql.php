@@ -14,6 +14,13 @@ class Webpie_Dal_Mysql implements Webpie_Dal_Dbinterface
 	private $curTable = NULL;
 	public function __construct(){}
 
+	/**
+	* @name dbSetting 设置数据库连接信息，并生成内部唯一标识，用来防止不断重新连接数据库
+	*
+	* @param $setting
+	*
+	* @returns   
+	*/
 	public function dbSetting($setting)
 	{
 		$this->setting = $setting;
@@ -22,6 +29,13 @@ class Webpie_Dal_Mysql implements Webpie_Dal_Dbinterface
 		return $dbObjName;
 	}
 
+	/**
+	* @name dbConnect 数据库连接，对于已经存在的数据库连接将不再重新连，直接返回连接对象
+	*
+	* @param $name
+	*
+	* @returns   
+	*/
 	public function dbConnect($name)
 	{
 		if(!is_object($this->dbObj[$name]))
@@ -38,7 +52,14 @@ class Webpie_Dal_Mysql implements Webpie_Dal_Dbinterface
 		return $this->dbObj[$name];
 	}
 
-	public function setDbObj($obj)
+	/**
+	* @name setCurDbObj 设置当前数据库对象为可用
+	*
+	* @param $obj
+	*
+	* @returns   
+	*/
+	public function setCurDbObj($obj)
 	{
 		if(in_array($obj, $this->dbObj))
 			$this->curDbObj = $obj;
@@ -48,21 +69,47 @@ class Webpie_Dal_Mysql implements Webpie_Dal_Dbinterface
 		return $this;
 	}
 
+	/**
+	* @name setCurTable 设置当前使用表名
+	*
+	* @param $table
+	*
+	* @returns   
+	*/
 	public function setCurTable($table)
 	{
 		$this->curTable = $table;
 		return $this;
 	}
 
-	public function dbCreate($columns, $values)
+	/**
+	* @name dbCreate 对数据库插入操作
+	*
+	* @param $columns
+	* @param $values
+	*
+	* @returns   
+	*/
+	public function dbCreate($columns, $values, $multi = false)
 	{
-		$stmt = $this->curDbObj->prepare('INSERT INTO ' . $this->curTable . '(' . $columns . ')VALUES(' . 
-										rtrim(str_repeat('?,', count($values)), ',') . ')');
+		$sql = 'INSERT INTO ' . $this->curTable . '(' . $columns . ')VALUES';
+		$joinValue = function($v){return '(' . rtrim(str_repeat('?,', count($v)), ',') . ')';};
+		if($multi)
+			$sql .= implode(',', array_map($joinValue, $values));
+		else
+			$sql .= $joinValue($values);
 
+		$stmt = $this->curDbObj->prepare($sql);
 		if($stmt === false)
 			throw new Webpie_Dal_Exception('Db Error(' . $this->curDbObj->errno . '):' . $this->curDbObj->error);
 
-		$params = array_pad(array_values($values), 0, implode('', array_keys($values)));
+		//multi
+		$arrKeys = implode('', array_keys($values));
+		$params[] = &$arrKeys;
+		foreach($values as $v)
+		{
+			$params[] = &$v;
+		}
 		if(call_user_func_array(array($stmt, 'bind_param'), $params) === false)
 			throw new Webpie_Dal_Exception('Db Error(' . $stmt->errno . '):' . $stmt->error);
 
@@ -92,7 +139,7 @@ class Webpie_Dal_Mysql implements Webpie_Dal_Dbinterface
 
 		if(!empty($options['where']))
 		{
-			$params = array_pad(array_values($options['where'][1]), 0, implode('', array_keys($options['where'][1])));
+			$params = array_merge(array(implode('', array_keys($options['where'][1]))), array_values($options['where'][1]));
 			if(call_user_func_array(array($stmt, 'bind_param'), $params) === false)
 				throw new Webpie_Dal_Exception('Db Error(' . $stmt->errno . '):' . $stmt->error);
 		}
@@ -116,7 +163,7 @@ class Webpie_Dal_Mysql implements Webpie_Dal_Dbinterface
 			$fields = explode(',', $columns);
 			foreach($fields as $name)
 			{
-				$field[] = &$col[$name];
+				$field[] = &$col[trim($name)];
 			}
 		}
 		if(call_user_func_array(array($stmt, 'bind_result'), $field) === false)
@@ -150,7 +197,7 @@ class Webpie_Dal_Mysql implements Webpie_Dal_Dbinterface
 		if($stmt === false)
 			throw new Webpie_Dal_Exception('Db Error(' . $this->curDbObj->errno . '):' . $this->curDbObj->error);
 
-		$params = array_pad(array_values($values), 0, implode('', array_keys($values)));
+		$params = array_merge(array(implode('', array_keys($values))), array_values($values));
 		if(call_user_func_array(array($stmt, 'bind_param'), $params) === false)
 			throw new Webpie_Dal_Exception('Db Error(' . $stmt->errno . '):' . $stmt->error);
 
@@ -186,6 +233,16 @@ class Webpie_Dal_Mysql implements Webpie_Dal_Dbinterface
 		return $affecteds;
 	}
 
+	public function getCurDbObj()
+	{
+		return $this->curDbObj;
+	}
+
+	public function getCurTable()
+	{
+		return $this->curTable;
+	}
+
 	/**
 	* @name __destruct 关闭所有打开的数据库连接
 	*
@@ -195,7 +252,7 @@ class Webpie_Dal_Mysql implements Webpie_Dal_Dbinterface
 	{
 		foreach($this->dbObj as $db)
 		{
-			$db->close();
+			is_object($db) ? $db->close() : '';
 		}
 	}
 }
