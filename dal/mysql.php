@@ -83,7 +83,7 @@ class Webpie_Dal_Mysql implements Webpie_Dal_Dbinterface
 	}
 
 	/**
-	* @name dbCreate 对数据库插入操作
+	* @name dbCreate 对数据库插入操作，允许一次插入多条
 	*
 	* @param $columns
 	* @param $values
@@ -103,44 +103,68 @@ class Webpie_Dal_Mysql implements Webpie_Dal_Dbinterface
 		if($stmt === false)
 			throw new Webpie_Dal_Exception('Db Error(' . $this->curDbObj->errno . '):' . $this->curDbObj->error);
 
-		//multi
-		$arrKeys = implode('', array_keys($values));
-		$params[] = &$arrKeys;
-		foreach($values as $v)
+		$params = array();
+		if($multi)
 		{
-			$params[] = &$v;
+			$firstParams = NULL;
+			$vs = array();
+			for($x = 0, $y = count($values); $x < $y; $x++)
+			{
+				$types = array_map(array($this, 'getVarType'), $values[$x]);
+				if(in_array(NULL, $types))
+					throw new Webpie_Dal_Exception('Db Error:bindParams values error');
+
+				$firstParams .= implode('', $types);
+				$vs = array_merge($vs, array_values($values[$x]));
+			}
+			$params[] = &$firstParams;
+
+			for($i = 0, $j = count($vs); $i < $j; $i++)
+			{
+				$params[] = &$vs[$i];
+			}
 		}
+		else
+			$params = $this->setBindParams($values);
+
 		if(call_user_func_array(array($stmt, 'bind_param'), $params) === false)
 			throw new Webpie_Dal_Exception('Db Error(' . $stmt->errno . '):' . $stmt->error);
 
 		if($stmt->execute() === false)
 			throw new Webpie_Dal_Exception('Db Error(' . $stmt->errno . '):' . $stmt->error);
 
-		$insertId = $stmt->insert_id;
+		$affecteds = $stmt->affected_rows;
 		$stmt->close();
-		return insertId;
+		return $affecteds;
 	}
-
+	
+	/**
+	* @name dbRead 对数据库的数据读取
+	*
+	* @param $columns
+	* @param $options
+	*
+	* @returns   
+	*/
 	public function dbRead($columns, $options = NULL)
 	{
 		$sql = 'SELECT ' . $columns . ' FROM ' . $this->curTable;
 		if(!empty($options['where']))
 			$sql .= ' WHERE ' . $options['where'][0];
 
-		if(!empty($options['limit']))
-			$sql .= ' LIMIT ' . $options['limit'];
-
 		if(!empty($options['order']))
 			$sql .= ' ORDER BY ' . $options['order'];
 
-		$stmt - $this->curDbObj->prepare($sql);
+		if(!empty($options['limit']))
+			$sql .= ' LIMIT ' . $options['limit'];
+
+		$stmt = $this->curDbObj->prepare($sql);
 		if($stmt === false)
 			throw new Webpie_Dal_Exception('Db Error(' . $this->curDbObj->errno . '):' . $this->curDbObj->error);
 
 		if(!empty($options['where']))
 		{
-			$params = array_merge(array(implode('', array_keys($options['where'][1]))), array_values($options['where'][1]));
-			if(call_user_func_array(array($stmt, 'bind_param'), $params) === false)
+			if(call_user_func_array(array($stmt, 'bind_param'), $this->setBindParams($options['where'][1])) === false)
 				throw new Webpie_Dal_Exception('Db Error(' . $stmt->errno . '):' . $stmt->error);
 		}
 
@@ -155,7 +179,7 @@ class Webpie_Dal_Mysql implements Webpie_Dal_Dbinterface
 			$fields = $metaData->fetch_fields();
 			foreach($fields as $f)
 			{
-				$field[] = $col[$f->name];
+				$field[] = &$col[$f->name];
 			}
 		}
 		else
@@ -177,16 +201,23 @@ class Webpie_Dal_Mysql implements Webpie_Dal_Dbinterface
 				$res[] = call_user_func_array($options['callback'], $col);
 			}
 			else
-				$res[] = $col;
+				$res[] = array_map(function($v){return $v;}, $col);
 		}
 
 		$stmt->close();
-
 		return $res;
 	}
 
-	public function dbGroupRead(){}
 
+	/**
+	* @name dbUpdate 更新数据库数据
+	*
+	* @param $columns
+	* @param $values
+	* @param $where
+	*
+	* @returns   
+	*/
 	public function dbUpdate($columns, $values, $where = NULL)
 	{
 		$sql = 'UPDATE ' . $this->curTable . ' SET ' . $columns;
@@ -197,8 +228,7 @@ class Webpie_Dal_Mysql implements Webpie_Dal_Dbinterface
 		if($stmt === false)
 			throw new Webpie_Dal_Exception('Db Error(' . $this->curDbObj->errno . '):' . $this->curDbObj->error);
 
-		$params = array_merge(array(implode('', array_keys($values))), array_values($values));
-		if(call_user_func_array(array($stmt, 'bind_param'), $params) === false)
+		if(call_user_func_array(array($stmt, 'bind_param'), $this->setBindParams($values)) === false)
 			throw new Webpie_Dal_Exception('Db Error(' . $stmt->errno . '):' . $stmt->error);
 
 		if($stmt->execute() === false)
@@ -216,14 +246,21 @@ class Webpie_Dal_Mysql implements Webpie_Dal_Dbinterface
 	*
 	* @returns   
 	*/
-	public function dbDelete($where = NULL)
+	public function dbDelete($whereCol = NULL, $colVal = NULL)
 	{
 		$sql = 'DELETE FROM ' . $this->curTable;
-		if(!empty($where))
-			$sql .= ' WHERE ' . $where;
+		if(!empty($whereCol))
+			$sql .= ' WHERE ' . $whereCol;
+
 		$stmt = $this->curDbObj->prepare($sql);
 		if($stmt === false)
 			throw new Webpie_Dal_Exception('Db Error(' . $this->curDbObj->errno . '):' . $this->curDbObj->error);
+
+		if(!empty($whereCol) && !empty($colVal))
+		{
+			if(call_user_func_array(array($stmt, 'bind_param'), $this->setBindParams($colVal)) === false)
+				throw new Webpie_Dal_Exception('Db Error(' . $stmt->errno . '):' . $stmt->error);
+		}
 
 		if($stmt->execute() === false)
 			throw new Webpie_Dal_Exception('Db Error(' . $stmt->errno . '):' . $stmt->error);
@@ -231,6 +268,54 @@ class Webpie_Dal_Mysql implements Webpie_Dal_Dbinterface
 		$affecteds = $stmt->affected_rows;
 		$stmt->close();
 		return $affecteds;
+	}
+
+	/**
+	* @name setBindParams 用来设置prepare的时候需要bind_param的时候的引用
+	*
+	* @param $values
+	*
+	* @returns   
+	*/
+	private function setBindParams(&$values)
+	{
+		$params = array(NULL);
+		$values = array_values($values);
+		for($i = 0, $j = count($values); $i < $j; $i++)
+		{
+			$type = $this->getVarType($values[$i]);
+			if(!$type)
+				throw new Webpie_Dal_Exception('Db Error:bindParams values error');
+			
+			$params[0] .= $type;
+			$params[] = &$values[$i];
+		}
+		
+		return $params;
+	}
+
+	/**
+	* @name getVarType 判断给定变量的类型
+	*
+	* @param $var
+	*
+	* @returns   
+	*/
+	private function getVarType($var)
+	{
+		if(is_string($var))
+			return 's';
+
+		if(is_int($var))
+			return 'i';
+
+		if(is_float($var))
+			return 'd';
+
+		if(is_resource($var))
+			return 'b';
+
+		return NULL;
 	}
 
 	public function getCurDbObj()
@@ -242,6 +327,13 @@ class Webpie_Dal_Mysql implements Webpie_Dal_Dbinterface
 	{
 		return $this->curTable;
 	}
+
+	public function getLastCreateId()
+	{
+		return $this->curDbObj->insert_id;
+	}
+	
+	public function dbGroupRead(){}
 
 	/**
 	* @name __destruct 关闭所有打开的数据库连接

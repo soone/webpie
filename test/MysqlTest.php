@@ -42,7 +42,53 @@ class MysqlTest extends PHPUnit_Framework_TestCase
 
 	public function testDbCreate()
 	{
-		var_dump($this->db->dbCreate('id, name', array('i' => 3, 's' => 'soone')));
-		//$this->assertEquals($this->dbObj->insert_id, $this->db->dbCreate('id, name', array('i' => 3, 's' => 'soone')));
+		$this->assertEquals(1, $this->db->dbCreate('id, name', array(3, 'soone')));
+		$this->assertEquals(2, $this->db->dbCreate('id, name', array(array(3, 'soone'), array(4, 'adou')), 1));
+	}
+
+	public function testDbRead()
+	{
+		$this->assertEquals(array(array('id' => 1, 'name' => 'Hartmut'), array('id' => 2, 'name' => 'Ulf')), $this->db->dbRead('*'));
+		$this->assertEquals(array(array('id' => 1, 'name' => 'Hartmut'), array('id' => 2, 'name' => 'Ulf')), $this->db->dbRead('id, name'));
+		$this->assertEquals(array(array('id' => 1), array('id' => 2)), $this->db->dbRead('id'));
+		$this->assertEquals(array(array('name' => 'Hartmut')), $this->db->dbRead('name', array('where' => array('id = ?', array(1)))));
+		$this->assertEquals(array(array('id' => 1), array('id' => 2)), $this->db->dbRead('id', array('where' => array('id <> ?', array('')))));
+		$this->assertEquals(array(array('id' => 1), array('id' => 2)), $this->db->dbRead('id', array('where' => array('name <> ?', array('soone')))));
+		$this->assertEquals(array(array('id' => 1, 'name' => 'Hartmut')), $this->db->dbRead('*', array('limit' => '0, 1')));
+		$this->assertEquals(array(array('id' => 2, 'name' => 'Ulf'), array('id' => 1, 'name' => 'Hartmut')), $this->db->dbRead('*', array('order' => 'id desc')));
+		$this->assertEquals(array(array('id' => 2, 'name' => 'Hartmut+1'), array('id' => 3, 'name' => 'Ulf+1')), $this->db->dbRead('*', array('callback' => function($id, $name){return array('id' => $id+1, 'name' => $name . '+1');})));
+		$this->assertEquals(array(array('id' => 2, 'name' => 'Hartmut+1')), $this->db->dbRead('*', array(
+																								'where' => array('id <> ?', array(2)),
+																								'limit' => '0, 1',
+																								'order' => 'id desc',
+																								'callback' => function($id, $name){return array('id' => $id+1, 'name' => $name . '+1');}
+																							)));
+	}
+
+	public function testDbUpdate()
+	{
+		$this->assertEquals(2, $this->db->dbUpdate('name = ?', array('soone')));
+		$this->assertEquals(1, $this->db->dbUpdate('name = ?', array('adou', 1), 'id = ?'));
+		$this->assertEquals(0, $this->db->dbUpdate('name = ?', array('adou', 1, 'soone'), 'id = ? AND name = ?'));
+	}
+
+	/**
+	* @dataProvider deletePro
+	*
+	* @returns   
+	*/
+	public function testDbDelete($eq, $where, $col)
+	{
+		$this->assertEquals($eq, $this->db->dbDelete($where, $col));
+	}
+
+	public function deletePro()
+	{
+		return array(
+			array(1, 'id <> ?', array(1)),
+			array(2, NULL, NULL),
+			array(1, 'id = ?', array(1)),
+			array(2, 'name <> ?', array('')),
+		);
 	}
 }
