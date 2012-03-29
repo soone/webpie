@@ -1,5 +1,5 @@
 <?php
-class Webpie_Dal_Memcache extends Webpie_Dal_Cacheabstract
+class Webpie_Dal_Redis extends Webpie_Dal_Cacheabstract
 {
 	public $setting = NULL;
 	private $cacheObj = NULL;
@@ -18,12 +18,12 @@ class Webpie_Dal_Memcache extends Webpie_Dal_Cacheabstract
 	{
 		if(!is_object($this->cacheObj[$name]))
 		{
-			$this->cacheObj[$name] = new Memcached;
-			$this->cacheObj[$name]->addServers($this->setting['servers']);
+			$this->cacheObj[$name] = new Redis;
+			$this->cacheObj[$name]->connect($this->setting['host'], $this->setting['port'], $this->setting['timeout']);
 
 			if(isset($this->setting['options']))
 			{
-				foreach($this->setting['options'] as $opt)
+				foreach($this->settiongs['options'] as $opt)
 				{
 					if(!$this->cacheObj[$name]->setOption($opt[0], $opt[1]))
 						throw new Webpie_Dal_Exception('Dal Cache Error:setOption fail');
@@ -47,26 +47,24 @@ class Webpie_Dal_Memcache extends Webpie_Dal_Cacheabstract
 
 	public function get($key, $options = NULL)
 	{
-		$opts = array();
-		$opts[] = &$key;
-
-		if(!empty($options['callback']))
-			$opts[] = &$options['callback'];
-
-		if(isset($options['cas']))
-			$opts[] = &$options['cas'];
-
-		return call_user_func_array(array($this->curCacheObj, 'get'), $opts);
+		$getRes = $this->curCacheObj->get($key);
+		if($getRes === false && !empty($options['callback'])
+			return $options['callback']();
+		else
+			return $getRes;
 	}
 
 	public function mGet($key)
 	{
-		return $this->curCacheObj->getMulti($key);
+		return $this->curCacheObj->mGet($key);
 	}
 
 	public function set($key, $val, $exp = NULL)
 	{
-		return $this->curCacheObj->set($key, $val, intval($exp));
+		if($exp !== NULL && intval($exp) > 0)
+			return $this->curCacheObj->setex($key, $exp, $val);
+		else
+			return $this->curCacheObj->set($key, $val);
 	}
 
 	public function append($key, $val)
