@@ -46,7 +46,7 @@ class Webpie_Dal_Mysql implements Webpie_Dal_Dbinterface
 											$this->setting['db']);
 			
 			if($this->dbObj[$name]->connect_error)
-				throw new Webpie_Dal_Exception('Db Connect Error(' . $this->dbObj[$name]->connect_errno . '):' . $this->dbObj[$name]->connect_error);
+				throw new Webpie_Dal_Exception('Dal Db Connect Error(' . $this->dbObj[$name]->connect_errno . '):' . $this->dbObj[$name]->connect_error);
 		}
 
 		return $this->dbObj[$name];
@@ -64,7 +64,7 @@ class Webpie_Dal_Mysql implements Webpie_Dal_Dbinterface
 		if(in_array($obj, $this->dbObj))
 			$this->curDbObj = $obj;
 		else
-			throw new Webpie_Dal_Exception('Db Error:You not connect the db');
+			throw new Webpie_Dal_Exception('Dal Db Error:You not connect the db');
 
 		return $this;
 	}
@@ -101,7 +101,7 @@ class Webpie_Dal_Mysql implements Webpie_Dal_Dbinterface
 
 		$stmt = $this->curDbObj->prepare($sql);
 		if($stmt === false)
-			throw new Webpie_Dal_Exception('Db Error(' . $this->curDbObj->errno . '):' . $this->curDbObj->error);
+			throw new Webpie_Dal_Exception('Dal Db Error(' . $this->curDbObj->errno . '):' . $this->curDbObj->error);
 
 		$params = array();
 		if($multi)
@@ -112,7 +112,7 @@ class Webpie_Dal_Mysql implements Webpie_Dal_Dbinterface
 			{
 				$types = array_map(array($this, 'getVarType'), $values[$x]);
 				if(in_array(NULL, $types))
-					throw new Webpie_Dal_Exception('Db Error:bindParams values error');
+					throw new Webpie_Dal_Exception('Dal Db Error:bindParams values error');
 
 				$firstParams .= implode('', $types);
 				$vs = array_merge($vs, array_values($values[$x]));
@@ -128,10 +128,10 @@ class Webpie_Dal_Mysql implements Webpie_Dal_Dbinterface
 			$params = $this->setBindParams($values);
 
 		if(call_user_func_array(array($stmt, 'bind_param'), $params) === false)
-			throw new Webpie_Dal_Exception('Db Error(' . $stmt->errno . '):' . $stmt->error);
+			throw new Webpie_Dal_Exception('Dal Db Error(' . $stmt->errno . '):' . $stmt->error);
 
 		if($stmt->execute() === false)
-			throw new Webpie_Dal_Exception('Db Error(' . $stmt->errno . '):' . $stmt->error);
+			throw new Webpie_Dal_Exception('Dal Db Error(' . $stmt->errno . '):' . $stmt->error);
 
 		$affecteds = $stmt->affected_rows;
 		$stmt->close();
@@ -160,16 +160,16 @@ class Webpie_Dal_Mysql implements Webpie_Dal_Dbinterface
 
 		$stmt = $this->curDbObj->prepare($sql);
 		if($stmt === false)
-			throw new Webpie_Dal_Exception('Db Error(' . $this->curDbObj->errno . '):' . $this->curDbObj->error);
+			throw new Webpie_Dal_Exception('Dal Db Error(' . $this->curDbObj->errno . '):' . $this->curDbObj->error);
 
 		if(!empty($options['where']))
 		{
 			if(call_user_func_array(array($stmt, 'bind_param'), $this->setBindParams($options['where'][1])) === false)
-				throw new Webpie_Dal_Exception('Db Error(' . $stmt->errno . '):' . $stmt->error);
+				throw new Webpie_Dal_Exception('Dal Db Error(' . $stmt->errno . '):' . $stmt->error);
 		}
 
 		if($stmt->execute() === false)
-			throw new Webpie_Dal_Exception('Db Error(' . $stmt->errno . '):' . $stmt->error);
+			throw new Webpie_Dal_Exception('Dal Db Error(' . $stmt->errno . '):' . $stmt->error);
 
 		$col = array();
 		$field = array();
@@ -191,7 +191,7 @@ class Webpie_Dal_Mysql implements Webpie_Dal_Dbinterface
 			}
 		}
 		if(call_user_func_array(array($stmt, 'bind_result'), $field) === false)
-			throw new Webpie_Dal_Exception('Db Error(' . $stmt->errno . '):' . $stmt->error);
+			throw new Webpie_Dal_Exception('Dal Db Error(' . $stmt->errno . '):' . $stmt->error);
 
 		$res = NULL;
 		while($stmt->fetch())
@@ -226,13 +226,13 @@ class Webpie_Dal_Mysql implements Webpie_Dal_Dbinterface
 
 		$stmt = $this->curDbObj->prepare($sql);
 		if($stmt === false)
-			throw new Webpie_Dal_Exception('Db Error(' . $this->curDbObj->errno . '):' . $this->curDbObj->error);
+			throw new Webpie_Dal_Exception('Dal Db Error(' . $this->curDbObj->errno . '):' . $this->curDbObj->error);
 
 		if(call_user_func_array(array($stmt, 'bind_param'), $this->setBindParams($values)) === false)
-			throw new Webpie_Dal_Exception('Db Error(' . $stmt->errno . '):' . $stmt->error);
+			throw new Webpie_Dal_Exception('Dal Db Error(' . $stmt->errno . '):' . $stmt->error);
 
 		if($stmt->execute() === false)
-			throw new Webpie_Dal_Exception('Db Error(' . $stmt->errno . '):' . $stmt->error);
+			throw new Webpie_Dal_Exception('Dal Db Error(' . $stmt->errno . '):' . $stmt->error);
 
 		$affecteds = $stmt->affected_rows;
 		$stmt->close();
@@ -254,16 +254,16 @@ class Webpie_Dal_Mysql implements Webpie_Dal_Dbinterface
 
 		$stmt = $this->curDbObj->prepare($sql);
 		if($stmt === false)
-			throw new Webpie_Dal_Exception('Db Error(' . $this->curDbObj->errno . '):' . $this->curDbObj->error);
+			throw new Webpie_Dal_Exception('Dal Db Error(' . $this->curDbObj->errno . '):' . $this->curDbObj->error);
 
 		if(!empty($whereCol) && !empty($colVal))
 		{
 			if(call_user_func_array(array($stmt, 'bind_param'), $this->setBindParams($colVal)) === false)
-				throw new Webpie_Dal_Exception('Db Error(' . $stmt->errno . '):' . $stmt->error);
+				throw new Webpie_Dal_Exception('Dal Db Error(' . $stmt->errno . '):' . $stmt->error);
 		}
 
 		if($stmt->execute() === false)
-			throw new Webpie_Dal_Exception('Db Error(' . $stmt->errno . '):' . $stmt->error);
+			throw new Webpie_Dal_Exception('Dal Db Error(' . $stmt->errno . '):' . $stmt->error);
 
 		$affecteds = $stmt->affected_rows;
 		$stmt->close();
@@ -285,7 +285,7 @@ class Webpie_Dal_Mysql implements Webpie_Dal_Dbinterface
 		{
 			$type = $this->getVarType($values[$i]);
 			if(!$type)
-				throw new Webpie_Dal_Exception('Db Error:bindParams values error');
+				throw new Webpie_Dal_Exception('Dal Db Error:bindParams values error');
 			
 			$params[0] .= $type;
 			$params[] = &$values[$i];
