@@ -8,9 +8,9 @@ abstract class Webpie_Dal_Cacheabstract
 	abstract public function mGet($key);
 	abstract public function set($key, $val, $exp = NULL);
 	abstract public function append($key, $val);
-	abstract public function casToSet($key, $val, $exp = 0, $cas = NULL);
-	abstract public function decr($key, $offset = 1);
-	abstract public function incr($key, $offset = 1);
+	abstract public function casToSet($key, $val, $exp = 0);
+	abstract public function decr($key, $offset = NULL);
+	abstract public function incr($key, $offset = NULL);
 	abstract public function del($key);
 	public function __call($method, $args)
 	{
