@@ -24,8 +24,10 @@ class Webpie_Dal_Mysql implements Webpie_Dal_Dbinterface
 	public function dbSetting($setting)
 	{
 		$this->setting = $setting;
-		$dbObjName = md5(implode('', $this->setting));
-		$this->dbObj[$dbObjName] = NULL;
+		$dbObjName = NULL;
+		array_walk_recursive($this->setting, function($s) use (&$dbObjName){$dbObjName .= $s;});
+		$dbObjName = md5($dbObjName);
+		!is_object($this->dbObj[$dbObjName]) ? $this->dbObj[$dbObjName] = NULL : '';
 		return $dbObjName;
 	}
 

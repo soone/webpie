@@ -8,7 +8,7 @@ class MysqlTest extends PHPUnit_Framework_TestCase
 		$this->db = new Webpie_Dal_Mysql;
 		$setting = array('host' => '127.0.0.1', 'user' => 'root', 'pass' => 123456, 'db' => 'test');
 		$this->dbObjName = $this->db->dbSetting($setting);
-		$this->dbObj = $this->db->dbConnect($this->db->dbSetting($setting));
+		$this->dbObj = $this->db->dbConnect($this->dbObjName);
 		$this->dbObj->query('DROP TABLE IF EXISTS friends');
 		$this->dbObj->query('CREATE TABLE friends (id int, name varchar(20))');
 		$this->dbObj->query('INSERT INTO friends VALUES (1,\'Hartmut\'), (2, \'Ulf\')');

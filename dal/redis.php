@@ -16,8 +16,10 @@ class Webpie_Dal_Redis extends Webpie_Dal_Cacheabstract
 	public function cacheSetting($setting)
 	{
 		$this->setting = $setting;
-		$cacheObjName = md5(implode('', $this->setting));
-		$this->cacheObj[$cacheObjName] = NULL;
+		$cacheObjName = NULL;
+		array_walk_recursive($this->setting, function($s) use (&$cacheObjName){$cacheObjName .= $s;});
+		$cacheObjName = md5($cacheObjName);
+		!is_object($this->cacheObj[$cacheObjName]) ? $this->cacheObj[$cacheObjName] = NULL : '';
 		return $cacheObjName;
 	}
 
@@ -35,7 +37,7 @@ class Webpie_Dal_Redis extends Webpie_Dal_Cacheabstract
 			$this->cacheObj[$name] = new Redis;
 			$this->cacheObj[$name]->connect($this->setting['host'], $this->setting['port'], $this->setting['timeout']);
 
-			if(isset($this->setting['options']))
+			if(!empty($this->setting['options']))
 			{
 				foreach($this->settiongs['options'] as $opt)
 				{
