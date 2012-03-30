@@ -116,8 +116,6 @@ class MemcacheTest extends PHPUnit_Framework_TestCase
 		$this->cache->set('k3', 1);
 		$this->assertEquals($this->cache->decr('k3'), 0);
 		$this->cache->set('k4', 1);
-		$this->assertEquals($this->cache->decr('k4', 3), -2);
-		$this->cache->set('k5', 1);
-		$this->assertEquals($this->cache->decr('k4', -3), 4);
+		$this->assertEquals($this->cache->decr('k4', 3), 0);
 	}
 }

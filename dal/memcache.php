@@ -161,8 +161,8 @@ class Webpie_Dal_Memcache extends Webpie_Dal_Cacheabstract
 	{
 		if($this->curCacheObj->get($key) === false)
 		{
-			$offset ? $this->curCacheObj->set($key, $offset) : $this->curCacheObj->set($key, -1);
-			return $offset ? $offset : -1;
+			$offset ? $this->curCacheObj->set($key, abs($offset) * -1) : $this->curCacheObj->set($key, -1);
+			return $offset ? abs($offset) * -1 : -1;
 		}
 
 		return $offset ? $this->curCacheObj->decrement($key, $offset) : $this->curCacheObj->decrement($key);
