@@ -159,10 +159,12 @@ class Webpie_Dal_Memcache extends Webpie_Dal_Cacheabstract
 	*/
 	public function decr($key, $offset = NULL)
 	{
-		if($this->curCacheObj->get($key) === false)
+		$val = $this->curCacheObj->get($key);
+		if($val === false || $val == 0)
 		{
-			$offset ? $this->curCacheObj->set($key, abs($offset) * -1) : $this->curCacheObj->set($key, -1);
-			return $offset ? abs($offset) * -1 : -1;
+			$offset = $offset ? abs($offset)*-1 : -1;
+			$this->curCacheObj->set($key, $offset);
+			return $offset;
 		}
 
 		return $offset ? $this->curCacheObj->decrement($key, $offset) : $this->curCacheObj->decrement($key);
@@ -178,8 +180,9 @@ class Webpie_Dal_Memcache extends Webpie_Dal_Cacheabstract
 	*/
 	public function incr($key, $offset = NULL)
 	{
-		if($this->curCacheObj->get($key) === false)
-			return $offset ? $this->curCacheObj->set($key, $offset) : $this->curCacheObj->set($key, 1);
+		$val = $this->curCacheObj->get($key);
+		if($val === false || $val == 0)
+			$this->curCacheObj->set($key, 0);
 
 		return $offset ? $this->curCacheObj->increment($key, $offset) : $this->curCacheObj->increment($key);
 	}

@@ -1,15 +1,17 @@
 <?php
 require '../webpie.php';
-class MemcacheTest extends PHPUnit_Framework_TestCase
+class RedisTest extends PHPUnit_Framework_TestCase
 {
 	public function setUp()
 	{
 		new webpie;
-		$this->cache = new Webpie_Dal_Memcache;
+		$this->cache = new Webpie_Dal_Redis;
 		$this->setting = array(
-			'servers' => array(array('host' => '127.0.0.1', 'port' => 11211, 'weight' => 10)),
+			'host' => '127.0.0.1', 
+			'port' => 6379, 
+			'timeout' => 1,
 			'options' => array(
-								array(Memcached::OPT_COMPRESSION, False),
+								array(Redis::OPT_SERIALIZER, Redis::SERIALIZER_PHP),
 							),
 		);
 
@@ -33,9 +35,11 @@ class MemcacheTest extends PHPUnit_Framework_TestCase
 	public function testCacheConnect()
 	{
 		$setting = array(
-			'servers' => array(array('host' => '127.0.0.1', 'port' => 11211, 'weight' => 10)),
+			'host' => '127.0.0.1', 
+			'port' => 6379, 
+			'timeout' => 1,
 		);
-		$this->assertInstanceOf('memcached', $this->cache->cacheConnect($this->cache->cacheSetting($setting)));
+		$this->assertInstanceOf('Redis', $this->cache->cacheConnect($this->cache->cacheSetting($setting)));
 	}
 
 	/**
@@ -78,7 +82,6 @@ class MemcacheTest extends PHPUnit_Framework_TestCase
 	* @param $append
 	*
 	* @returns   
-	*/
 	public function testAppend($key, $val, $append)
 	{
 		$this->cache->set($key, $val);
@@ -96,6 +99,7 @@ class MemcacheTest extends PHPUnit_Framework_TestCase
 			array('k5', '5', 'k'),
 		);
 	}
+	*/
 
 	/**
 	* @dataProvider getPro
@@ -115,18 +119,18 @@ class MemcacheTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals(-3, $this->cache->decr('k2', 3));
 		$this->cache->set('k3', 1);
 		$this->assertEquals(0, $this->cache->decr('k3'));
-		$this->cache->set('k4', 1);
+		$this->cache->set('k4', 0);
 		$this->assertEquals(0, $this->cache->decr('k4', 3));
 	}
 
 	public function testIncr()
 	{
-		$this->assertEquals(1, $this->cache->incr('k1'));
-		$this->assertEquals(3, $this->cache->incr('k2', 3));
+		$this->assertEquals($this->cache->incr('k1'), 1);
+		$this->assertEquals($this->cache->incr('k2', 3), 3);
 		$this->cache->set('k3', 1);
-		$this->assertEquals(2, $this->cache->incr('k3'));
+		$this->assertEquals($this->cache->incr('k3'), 2);
 		$this->cache->set('k4', 1);
-		$this->assertEquals(4, $this->cache->incr('k4', 3));
+		$this->assertEquals($this->cache->incr('k4', 3), 4);
 	}
 
 	/**

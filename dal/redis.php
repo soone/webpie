@@ -39,7 +39,7 @@ class Webpie_Dal_Redis extends Webpie_Dal_Cacheabstract
 
 			if(!empty($this->setting['options']))
 			{
-				foreach($this->settiongs['options'] as $opt)
+				foreach($this->setting['options'] as $opt)
 				{
 					if(!$this->cacheObj[$name]->setOption($opt[0], $opt[1]))
 						throw new Webpie_Dal_Exception('Dal Cache Error:setOption fail');
@@ -79,7 +79,7 @@ class Webpie_Dal_Redis extends Webpie_Dal_Cacheabstract
 	public function get($key, $options = NULL)
 	{
 		$getRes = $this->curCacheObj->get($key);
-		if($getRes === false && !empty($options['callback'])
+		if($getRes === false && !empty($options['callback']))
 			return $options['callback']();
 		else
 			return $getRes;
@@ -94,7 +94,14 @@ class Webpie_Dal_Redis extends Webpie_Dal_Cacheabstract
 	*/
 	public function mGet($key)
 	{
-		return $this->curCacheObj->mGet($key);
+		$vals = $this->curCacheObj->mGet($key);
+		$res = array();
+		for($i = 0, $j = count($key); $i < $j; $i++)
+		{
+			$res[$key[$i]] = $vals[$i];
+		}
+
+		return $res;
 	}
 
 	/**
@@ -124,7 +131,10 @@ class Webpie_Dal_Redis extends Webpie_Dal_Cacheabstract
 	*/
 	public function append($key, $val)
 	{
-		return $this->curCacheObj->append($key, $val);
+		if($this->curCacheObj->append($key, $val) > 0)
+			return true;
+		else
+			return false;
 	}
 
 	/**
@@ -140,7 +150,8 @@ class Webpie_Dal_Redis extends Webpie_Dal_Cacheabstract
 	public function casToSet($key, $val, $exp = 0)
 	{
 		$this->curCacheObj->watch($key);
-		return $this->curCacheObj->multi()->set($val)->exec();
+		$res = $this->curCacheObj->multi()->set($key, $val)->exec();
+		return $res[0];
 	}
 
 	/**
