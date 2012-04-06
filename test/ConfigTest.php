@@ -1,5 +1,5 @@
 <?php
-require '../webpie.php';
+require '/data/www/webpie/webpie.php';
 class ConfigTest extends PHPUnit_Framework_TestCase
 {
 	public $cObj = NULL;

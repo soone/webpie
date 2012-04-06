@@ -1,5 +1,5 @@
 <?php
-require '../webpie.php';
+require '/data/www/webpie/webpie.php';
 class InputsTest extends PHPUnit_Framework_TestCase
 {
 	public function setUp()
