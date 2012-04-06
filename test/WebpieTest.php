@@ -1,5 +1,5 @@
 <?php
-require '/data/www/webpie/webpie.php';
+require_once '/data/www/webpie/webpie.php';
 class WebpieTest extends PHPUnit_Framework_TestCase
 {
 	private $wp = NULL;

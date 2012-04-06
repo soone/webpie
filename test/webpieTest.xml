@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit>
+    <testsuites>
+        <testsuite name="webpie">
+            <file>ConfigTest.php</file>
+            <file>WebpieTest.php</file>
+            <file>MysqlTest.php</file>
+            <file>MemcacheTest.php</file>
+            <file>RedisTest.php</file>
+            <file>ValidTest.php</file>
+            <file>InputsTest.php</file>
+            <file>RenderTest.php</file>
+        </testsuite>
+    </testsuites>
+</phpunit>

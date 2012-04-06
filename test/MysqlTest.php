@@ -1,5 +1,5 @@
 <?php
-require '/data/www/webpie/webpie.php';
+require_once '/data/www/webpie/webpie.php';
 class MysqlTest extends PHPUnit_Framework_TestCase
 {
 	public function setUp()
