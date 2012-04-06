@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="webpie" basedir="/data/www/webpie/" default="dist" description="a simple php framework">
+    <property name="basedir" value="/data/www/webpie/" override="true" />
+    <property name="phpunitReport" value="/data/www/webpie/build/" override="true" />
+    <target name="gitUp" description="git更新" />
+    <target name="dist" depends="gitUp" description="执行单元测试">
+        <echo msg="运行phpunit单元测试" />
+        <exec command="phpunit --log-junit ${phpunitReport}phpunit.xml --coverage-clover ${phpunitReport}phpunit.clover.xml -c test/webpieTest.xml" /> 
+    </target>
+</project>

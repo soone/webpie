@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="webpie" file="/data/www/webpie/core/webpie.php" tests="165" assertions="303" failures="9" errors="0" time="1.647691">
+    <testsuite name="ConfigTest" file="/data/www/webpie/test/ConfigTest.php" tests="4" assertions="19" failures="2" errors="0" time="0.075138">
+      <testcase name="testGetInstance" class="ConfigTest" file="/data/www/webpie/test/ConfigTest.php" line="12" assertions="2" time="0.011153"/>
+      <testcase name="testImport" class="ConfigTest" file="/data/www/webpie/test/ConfigTest.php" line="21" assertions="11" time="0.047706">
+        <failure type="PHPUnit_Framework_ExpectationFailedException">ConfigTest::testImport
+Failed asserting that false matches expected true.
+
+/data/www/webpie/test/ConfigTest.php:51
+</failure>
+      </testcase>
+      <testcase name="testGetAndSet" class="ConfigTest" file="/data/www/webpie/test/ConfigTest.php" line="64" assertions="4" time="0.009993">
+        <failure type="PHPUnit_Framework_ExpectationFailedException">ConfigTest::testGetAndSet
+Failed asserting that two strings are equal.
+--- Expected
++++ Actual
+@@ @@
+-'/data/www/webpie/core'
++'/data/www/webpie'
+
+/data/www/webpie/test/ConfigTest.php:69
+</failure>
+      </testcase>
+      <testcase name="testGetReqWith" class="ConfigTest" file="/data/www/webpie/test/ConfigTest.php" line="90" assertions="2" time="0.006286"/>
+    </testsuite>
+    <testsuite name="WebpieTest" file="/data/www/webpie/test/WebpieTest.php" tests="1" assertions="15" failures="0" errors="0" time="0.043751">
+      <testcase name="testHandler" class="WebpieTest" file="/data/www/webpie/test/WebpieTest.php" line="12" assertions="15" time="0.043751"/>
+    </testsuite>
+    <testsuite name="MysqlTest" file="/data/www/webpie/test/MysqlTest.php" tests="11" assertions="25" failures="0" errors="0" time="0.203471">
+      <testcase name="testDbSetting" class="MysqlTest" file="/data/www/webpie/test/MysqlTest.php" line="19" assertions="1" time="0.022804"/>
+      <testcase name="testDbConnect" class="MysqlTest" file="/data/www/webpie/test/MysqlTest.php" line="25" assertions="1" time="0.008142"/>
+      <testcase name="testSetCurDbObjAndGetCurDbObj" class="MysqlTest" file="/data/www/webpie/test/MysqlTest.php" line="31" assertions="2" time="0.007543"/>
+      <testcase name="testSetCurTableAndGetCurTable" class="MysqlTest" file="/data/www/webpie/test/MysqlTest.php" line="37" assertions="2" time="0.009188"/>
+      <testcase name="testDbCreate" class="MysqlTest" file="/data/www/webpie/test/MysqlTest.php" line="43" assertions="2" time="0.012191"/>
+      <testcase name="testDbRead" class="MysqlTest" file="/data/www/webpie/test/MysqlTest.php" line="49" assertions="10" time="0.089877"/>
+      <testcase name="testDbUpdate" class="MysqlTest" file="/data/www/webpie/test/MysqlTest.php" line="68" assertions="3" time="0.017697"/>
+      <testsuite name="MysqlTest::testDbDelete" tests="4" assertions="4" failures="0" errors="0" time="0.036029">
+        <testcase name="testDbDelete with data set #0" assertions="1" time="0.009544"/>
+        <testcase name="testDbDelete with data set #1" assertions="1" time="0.008421"/>
+        <testcase name="testDbDelete with data set #2" assertions="1" time="0.009119"/>
+        <testcase name="testDbDelete with data set #3" assertions="1" time="0.008945"/>
+      </testsuite>
+    </testsuite>
+    <testsuite name="MemcacheTest" file="/data/www/webpie/test/MemcacheTest.php" tests="26" assertions="53" failures="0" errors="0" time="0.251642">
+      <testcase name="testCacheSetting" class="MemcacheTest" file="/data/www/webpie/test/MemcacheTest.php" line="26" assertions="1" time="0.009341"/>
+      <testcase name="testCacheConnect" class="MemcacheTest" file="/data/www/webpie/test/MemcacheTest.php" line="33" assertions="1" time="0.008015"/>
+      <testsuite name="MemcacheTest::testGetAndSet" tests="5" assertions="10" failures="0" errors="0" time="0.048057">
+        <testcase name="testGetAndSet with data set #0" assertions="2" time="0.008038"/>
+        <testcase name="testGetAndSet with data set #1" assertions="2" time="0.007637"/>
+        <testcase name="testGetAndSet with data set #2" assertions="2" time="0.012293"/>
+        <testcase name="testGetAndSet with data set #3" assertions="2" time="0.011444"/>
+        <testcase name="testGetAndSet with data set #4" assertions="2" time="0.008645"/>
+      </testsuite>
+      <testcase name="testMGet" class="MemcacheTest" file="/data/www/webpie/test/MemcacheTest.php" line="63" assertions="1" time="0.015190"/>
+      <testsuite name="MemcacheTest::testAppend" tests="5" assertions="10" failures="0" errors="0" time="0.046619">
+        <testcase name="testAppend with data set #0" assertions="2" time="0.009154"/>
+        <testcase name="testAppend with data set #1" assertions="2" time="0.008993"/>
+        <testcase name="testAppend with data set #2" assertions="2" time="0.009100"/>
+        <testcase name="testAppend with data set #3" assertions="2" time="0.010899"/>
+        <testcase name="testAppend with data set #4" assertions="2" time="0.008473"/>
+      </testsuite>
+      <testsuite name="MemcacheTest::testCasToSet" tests="5" assertions="10" failures="0" errors="0" time="0.043526">
+        <testcase name="testCasToSet with data set #0" assertions="2" time="0.008948"/>
+        <testcase name="testCasToSet with data set #1" assertions="2" time="0.008071"/>
+        <testcase name="testCasToSet with data set #2" assertions="2" time="0.008551"/>
+        <testcase name="testCasToSet with data set #3" assertions="2" time="0.008520"/>
+        <testcase name="testCasToSet with data set #4" assertions="2" time="0.009436"/>
+      </testsuite>
+      <testcase name="testDecr" class="MemcacheTest" file="/data/www/webpie/test/MemcacheTest.php" line="112" assertions="4" time="0.015663"/>
+      <testcase name="testIncr" class="MemcacheTest" file="/data/www/webpie/test/MemcacheTest.php" line="122" assertions="4" time="0.012058"/>
+      <testsuite name="MemcacheTest::testDel" tests="6" assertions="12" failures="0" errors="0" time="0.053173">
+        <testcase name="testDel with data set #0" assertions="2" time="0.007529"/>
+        <testcase name="testDel with data set #1" assertions="2" time="0.010790"/>
+        <testcase name="testDel with data set #2" assertions="2" time="0.007528"/>
+        <testcase name="testDel with data set #3" assertions="2" time="0.008314"/>
+        <testcase name="testDel with data set #4" assertions="2" time="0.009450"/>
+        <testcase name="testDel with data set #5" assertions="2" time="0.009562"/>
+      </testsuite>
+    </testsuite>
+    <testsuite name="RedisTest" file="/data/www/webpie/test/RedisTest.php" tests="21" assertions="36" failures="7" errors="0" time="0.210047">
+      <testcase name="testCacheSetting" class="RedisTest" file="/data/www/webpie/test/RedisTest.php" line="28" assertions="1" time="0.013245"/>
+      <testcase name="testCacheConnect" class="RedisTest" file="/data/www/webpie/test/RedisTest.php" line="35" assertions="1" time="0.007938"/>
+      <testsuite name="RedisTest::testGetAndSet" tests="5" assertions="10" failures="0" errors="0" time="0.046770">
+        <testcase name="testGetAndSet with data set #0" assertions="2" time="0.008459"/>
+        <testcase name="testGetAndSet with data set #1" assertions="2" time="0.008146"/>
+        <testcase name="testGetAndSet with data set #2" assertions="2" time="0.012089"/>
+        <testcase name="testGetAndSet with data set #3" assertions="2" time="0.009662"/>
+        <testcase name="testGetAndSet with data set #4" assertions="2" time="0.008414"/>
+      </testsuite>
+      <testcase name="testMGet" class="RedisTest" file="/data/www/webpie/test/RedisTest.php" line="67" assertions="1" time="0.018105"/>
+      <testsuite name="RedisTest::testCasToSet" tests="5" assertions="10" failures="0" errors="0" time="0.048530">
+        <testcase name="testCasToSet with data set #0" assertions="2" time="0.012370"/>
+        <testcase name="testCasToSet with data set #1" assertions="2" time="0.008819"/>
+        <testcase name="testCasToSet with data set #2" assertions="2" time="0.009087"/>
+        <testcase name="testCasToSet with data set #3" assertions="2" time="0.009053"/>
+        <testcase name="testCasToSet with data set #4" assertions="2" time="0.009201"/>
+      </testsuite>
+      <testcase name="testDecr" class="RedisTest" file="/data/www/webpie/test/RedisTest.php" line="116" assertions="4" time="0.012129"/>
+      <testcase name="testIncr" class="RedisTest" file="/data/www/webpie/test/RedisTest.php" line="126" assertions="3" time="0.011517">
+        <failure type="PHPUnit_Framework_ExpectationFailedException">RedisTest::testIncr
+Failed asserting that 2 matches expected false.
+
+/data/www/webpie/test/RedisTest.php:131
+</failure>
+      </testcase>
+      <testsuite name="RedisTest::testDel" tests="6" assertions="6" failures="6" errors="0" time="0.051813">
+        <testcase name="testDel with data set #0" assertions="1" time="0.007472">
+          <failure type="PHPUnit_Framework_ExpectationFailedException">RedisTest::testDel with data set #0 ('k1', 1)
+Failed asserting that 1 is true.
+
+/data/www/webpie/test/RedisTest.php:147
+</failure>
+        </testcase>
+        <testcase name="testDel with data set #1" assertions="1" time="0.006841">
+          <failure type="PHPUnit_Framework_ExpectationFailedException">RedisTest::testDel with data set #1 ('k2', 1)
+Failed asserting that 1 is true.
+
+/data/www/webpie/test/RedisTest.php:147
+</failure>
+        </testcase>
+        <testcase name="testDel with data set #2" assertions="1" time="0.008066">
+          <failure type="PHPUnit_Framework_ExpectationFailedException">RedisTest::testDel with data set #2 ('k3', 1)
+Failed asserting that 1 is true.
+
+/data/www/webpie/test/RedisTest.php:147
+</failure>
+        </testcase>
+        <testcase name="testDel with data set #3" assertions="1" time="0.007245">
+          <failure type="PHPUnit_Framework_ExpectationFailedException">RedisTest::testDel with data set #3 ('k4', 1)
+Failed asserting that 1 is true.
+
+/data/www/webpie/test/RedisTest.php:147
+</failure>
+        </testcase>
+        <testcase name="testDel with data set #4" assertions="1" time="0.013752">
+          <failure type="PHPUnit_Framework_ExpectationFailedException">RedisTest::testDel with data set #4 ('k5', 1)
+Failed asserting that 1 is true.
+
+/data/www/webpie/test/RedisTest.php:147
+</failure>
+        </testcase>
+        <testcase name="testDel with data set #5" assertions="1" time="0.008437">
+          <failure type="PHPUnit_Framework_ExpectationFailedException">RedisTest::testDel with data set #5 ('k6', 1)
+Failed asserting that 1 is true.
+
+/data/www/webpie/test/RedisTest.php:147
+</failure>
+        </testcase>
+      </testsuite>
+    </testsuite>
+    <testsuite name="ValidTest" file="/data/www/webpie/test/ValidTest.php" tests="7" assertions="58" failures="0" errors="0" time="0.140649">
+      <testsuite name="ValidTest::testIsRequired" tests="1" assertions="4" failures="0" errors="0" time="0.014580">
+        <testcase name="testIsRequired with data set #0" assertions="4" time="0.014580"/>
+      </testsuite>
+      <testsuite name="ValidTest::testValidLength" tests="1" assertions="5" failures="0" errors="0" time="0.009746">
+        <testcase name="testValidLength with data set #0" assertions="5" time="0.009746"/>
+      </testsuite>
+      <testsuite name="ValidTest::testSetDefault" tests="1" assertions="3" failures="0" errors="0" time="0.009005">
+        <testcase name="testSetDefault with data set #0" assertions="3" time="0.009005"/>
+      </testsuite>
+      <testsuite name="ValidTest::testValidRange" tests="1" assertions="7" failures="0" errors="0" time="0.013749">
+        <testcase name="testValidRange with data set #0" assertions="7" time="0.013749"/>
+      </testsuite>
+      <testsuite name="ValidTest::testToApplyExpect" tests="1" assertions="5" failures="0" errors="0" time="0.036509">
+        <testcase name="testToApplyExpect with data set #0" assertions="5" time="0.036509"/>
+      </testsuite>
+      <testsuite name="ValidTest::testEqualTo" tests="1" assertions="3" failures="0" errors="0" time="0.009112">
+        <testcase name="testEqualTo with data set #0" assertions="3" time="0.009112"/>
+      </testsuite>
+      <testsuite name="ValidTest::testToValid" tests="1" assertions="31" failures="0" errors="0" time="0.047948">
+        <testcase name="testToValid with data set #0" assertions="31" time="0.047948"/>
+      </testsuite>
+    </testsuite>
+    <testsuite name="InputsTest" file="/data/www/webpie/test/InputsTest.php" tests="94" assertions="92" failures="0" errors="0" time="0.686766">
+      <testsuite name="InputsTest::testValidEmail" tests="8" assertions="8" failures="0" errors="0" time="0.052722">
+        <testcase name="testValidEmail with data set #0" assertions="1" time="0.006103"/>
+        <testcase name="testValidEmail with data set #1" assertions="1" time="0.006561"/>
+        <testcase name="testValidEmail with data set #2" assertions="1" time="0.007412"/>
+        <testcase name="testValidEmail with data set #3" assertions="1" time="0.007320"/>
+        <testcase name="testValidEmail with data set #4" assertions="1" time="0.006347"/>
+        <testcase name="testValidEmail with data set #5" assertions="1" time="0.006289"/>
+        <testcase name="testValidEmail with data set #6" assertions="1" time="0.006457"/>
+        <testcase name="testValidEmail with data set #7" assertions="1" time="0.006233"/>
+      </testsuite>
+      <testsuite name="InputsTest::testValidIp" tests="4" assertions="4" failures="0" errors="0" time="0.031864">
+        <testcase name="testValidIp with data set #0" assertions="1" time="0.005867"/>
+        <testcase name="testValidIp with data set #1" assertions="1" time="0.008407"/>
+        <testcase name="testValidIp with data set #2" assertions="1" time="0.010728"/>
+        <testcase name="testValidIp with data set #3" assertions="1" time="0.006862"/>
+      </testsuite>
+      <testsuite name="InputsTest::testValidUrl" tests="5" assertions="5" failures="0" errors="0" time="0.035759">
+        <testcase name="testValidUrl with data set #0" assertions="1" time="0.006287"/>
+        <testcase name="testValidUrl with data set #1" assertions="1" time="0.006678"/>
+        <testcase name="testValidUrl with data set #2" assertions="1" time="0.006895"/>
+        <testcase name="testValidUrl with data set #3" assertions="1" time="0.008915"/>
+        <testcase name="testValidUrl with data set #4" assertions="1" time="0.006984"/>
+      </testsuite>
+      <testsuite name="InputsTest::testValidUrlPath" tests="5" assertions="5" failures="0" errors="0" time="0.035543">
+        <testcase name="testValidUrlPath with data set #0" assertions="1" time="0.006740"/>
+        <testcase name="testValidUrlPath with data set #1" assertions="1" time="0.006312"/>
+        <testcase name="testValidUrlPath with data set #2" assertions="1" time="0.009364"/>
+        <testcase name="testValidUrlPath with data set #3" assertions="1" time="0.006957"/>
+        <testcase name="testValidUrlPath with data set #4" assertions="1" time="0.006170"/>
+      </testsuite>
+      <testsuite name="InputsTest::testValidUrlQuery" tests="4" assertions="4" failures="0" errors="0" time="0.034848">
+        <testcase name="testValidUrlQuery with data set #0" assertions="1" time="0.011587"/>
+        <testcase name="testValidUrlQuery with data set #1" assertions="1" time="0.008195"/>
+        <testcase name="testValidUrlQuery with data set #2" assertions="1" time="0.007039"/>
+        <testcase name="testValidUrlQuery with data set #3" assertions="1" time="0.008027"/>
+      </testsuite>
+      <testsuite name="InputsTest::testValidDate" tests="5" assertions="5" failures="0" errors="0" time="0.039488">
+        <testcase name="testValidDate with data set #0" assertions="1" time="0.008962"/>
+        <testcase name="testValidDate with data set #1" assertions="1" time="0.006796"/>
+        <testcase name="testValidDate with data set #2" assertions="1" time="0.007951"/>
+        <testcase name="testValidDate with data set #3" assertions="1" time="0.006942"/>
+        <testcase name="testValidDate with data set #4" assertions="1" time="0.008837"/>
+      </testsuite>
+      <testsuite name="InputsTest::testValidCnZip" tests="4" assertions="4" failures="0" errors="0" time="0.028704">
+        <testcase name="testValidCnZip with data set #0" assertions="1" time="0.009804"/>
+        <testcase name="testValidCnZip with data set #1" assertions="1" time="0.006112"/>
+        <testcase name="testValidCnZip with data set #2" assertions="1" time="0.006699"/>
+        <testcase name="testValidCnZip with data set #3" assertions="1" time="0.006089"/>
+      </testsuite>
+      <testsuite name="InputsTest::testValidCnPhone" tests="10" assertions="10" failures="0" errors="0" time="0.066417">
+        <testcase name="testValidCnPhone with data set #0" assertions="1" time="0.006480"/>
+        <testcase name="testValidCnPhone with data set #1" assertions="1" time="0.005756"/>
+        <testcase name="testValidCnPhone with data set #2" assertions="1" time="0.006471"/>
+        <testcase name="testValidCnPhone with data set #3" assertions="1" time="0.006481"/>
+        <testcase name="testValidCnPhone with data set #4" assertions="1" time="0.006362"/>
+        <testcase name="testValidCnPhone with data set #5" assertions="1" time="0.006102"/>
+        <testcase name="testValidCnPhone with data set #6" assertions="1" time="0.008124"/>
+        <testcase name="testValidCnPhone with data set #7" assertions="1" time="0.008117"/>
+        <testcase name="testValidCnPhone with data set #8" assertions="1" time="0.006611"/>
+        <testcase name="testValidCnPhone with data set #9" assertions="1" time="0.005913"/>
+      </testsuite>
+      <testsuite name="InputsTest::testValidCnTel" tests="19" assertions="19" failures="0" errors="0" time="0.139272">
+        <testcase name="testValidCnTel with data set #0" assertions="1" time="0.006207"/>
+        <testcase name="testValidCnTel with data set #1" assertions="1" time="0.006710"/>
+        <testcase name="testValidCnTel with data set #2" assertions="1" time="0.009344"/>
+        <testcase name="testValidCnTel with data set #3" assertions="1" time="0.006939"/>
+        <testcase name="testValidCnTel with data set #4" assertions="1" time="0.006161"/>
+        <testcase name="testValidCnTel with data set #5" assertions="1" time="0.006591"/>
+        <testcase name="testValidCnTel with data set #6" assertions="1" time="0.006817"/>
+        <testcase name="testValidCnTel with data set #7" assertions="1" time="0.011043"/>
+        <testcase name="testValidCnTel with data set #8" assertions="1" time="0.007189"/>
+        <testcase name="testValidCnTel with data set #9" assertions="1" time="0.006123"/>
+        <testcase name="testValidCnTel with data set #10" assertions="1" time="0.006724"/>
+        <testcase name="testValidCnTel with data set #11" assertions="1" time="0.006366"/>
+        <testcase name="testValidCnTel with data set #12" assertions="1" time="0.009276"/>
+        <testcase name="testValidCnTel with data set #13" assertions="1" time="0.006814"/>
+        <testcase name="testValidCnTel with data set #14" assertions="1" time="0.006080"/>
+        <testcase name="testValidCnTel with data set #15" assertions="1" time="0.010399"/>
+        <testcase name="testValidCnTel with data set #16" assertions="1" time="0.006609"/>
+        <testcase name="testValidCnTel with data set #17" assertions="1" time="0.007213"/>
+        <testcase name="testValidCnTel with data set #18" assertions="1" time="0.006667"/>
+      </testsuite>
+      <testsuite name="InputsTest::testValidvalidCardByLuhm" tests="2" assertions="2" failures="0" errors="0" time="0.013865">
+        <testcase name="testValidvalidCardByLuhm with data set #0" assertions="1" time="0.006695"/>
+        <testcase name="testValidvalidCardByLuhm with data set #1" assertions="1" time="0.007170"/>
+      </testsuite>
+      <testcase name="testValidCnId" class="InputsTest" file="/data/www/webpie/test/InputsTest.php" line="238" assertions="0" time="0.004799"/>
+      <testcase name="testValidCnIdStrict" class="InputsTest" file="/data/www/webpie/test/InputsTest.php" line="239" assertions="0" time="0.004718"/>
+      <testsuite name="InputsTest::testValidComPass" tests="3" assertions="3" failures="0" errors="0" time="0.022675">
+        <testcase name="testValidComPass with data set #0" assertions="1" time="0.009386"/>
+        <testcase name="testValidComPass with data set #1" assertions="1" time="0.006837"/>
+        <testcase name="testValidComPass with data set #2" assertions="1" time="0.006452"/>
+      </testsuite>
+      <testsuite name="InputsTest::testValidComUser" tests="10" assertions="10" failures="0" errors="0" time="0.083183">
+        <testcase name="testValidComUser with data set #0" assertions="1" time="0.007421"/>
+        <testcase name="testValidComUser with data set #1" assertions="1" time="0.006764"/>
+        <testcase name="testValidComUser with data set #2" assertions="1" time="0.007124"/>
+        <testcase name="testValidComUser with data set #3" assertions="1" time="0.006580"/>
+        <testcase name="testValidComUser with data set #4" assertions="1" time="0.011834"/>
+        <testcase name="testValidComUser with data set #5" assertions="1" time="0.007875"/>
+        <testcase name="testValidComUser with data set #6" assertions="1" time="0.006884"/>
+        <testcase name="testValidComUser with data set #7" assertions="1" time="0.008506"/>
+        <testcase name="testValidComUser with data set #8" assertions="1" time="0.012098"/>
+        <testcase name="testValidComUser with data set #9" assertions="1" time="0.008097"/>
+      </testsuite>
+      <testsuite name="InputsTest::testStringLen" tests="13" assertions="13" failures="0" errors="0" time="0.092909">
+        <testcase name="testStringLen with data set #0" assertions="1" time="0.007065"/>
+        <testcase name="testStringLen with data set #1" assertions="1" time="0.006297"/>
+        <testcase name="testStringLen with data set #2" assertions="1" time="0.006721"/>
+        <testcase name="testStringLen with data set #3" assertions="1" time="0.007266"/>
+        <testcase name="testStringLen with data set #4" assertions="1" time="0.006705"/>
+        <testcase name="testStringLen with data set #5" assertions="1" time="0.008103"/>
+        <testcase name="testStringLen with data set #6" assertions="1" time="0.007009"/>
+        <testcase name="testStringLen with data set #7" assertions="1" time="0.006600"/>
+        <testcase name="testStringLen with data set #8" assertions="1" time="0.006187"/>
+        <testcase name="testStringLen with data set #9" assertions="1" time="0.006537"/>
+        <testcase name="testStringLen with data set #10" assertions="1" time="0.006038"/>
+        <testcase name="testStringLen with data set #11" assertions="1" time="0.010778"/>
+        <testcase name="testStringLen with data set #12" assertions="1" time="0.007603"/>
+      </testsuite>
+    </testsuite>
+    <testsuite name="RenderTest" file="/data/www/webpie/test/RenderTest.php" tests="1" assertions="5" failures="0" errors="0" time="0.036227">
+      <testcase name="testConstruct" class="RenderTest" file="/data/www/webpie/test/RenderTest.php" line="11" assertions="5" time="0.036227"/>
+    </testsuite>
+  </testsuite>
+</testsuites>

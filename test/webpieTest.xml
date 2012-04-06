@@ -2,14 +2,14 @@
 <phpunit>
     <testsuites>
         <testsuite name="webpie">
-            <file>ConfigTest.php</file>
-            <file>WebpieTest.php</file>
-            <file>MysqlTest.php</file>
-            <file>MemcacheTest.php</file>
-            <file>RedisTest.php</file>
-            <file>ValidTest.php</file>
-            <file>InputsTest.php</file>
-            <file>RenderTest.php</file>
+            <file>/data/www/webpie/test/ConfigTest.php</file>
+            <file>/data/www/webpie/test/WebpieTest.php</file>
+            <file>/data/www/webpie/test/MysqlTest.php</file>
+            <file>/data/www/webpie/test/MemcacheTest.php</file>
+            <file>/data/www/webpie/test/RedisTest.php</file>
+            <file>/data/www/webpie/test/ValidTest.php</file>
+            <file>/data/www/webpie/test/InputsTest.php</file>
+            <file>/data/www/webpie/test/RenderTest.php</file>
         </testsuite>
     </testsuites>
 </phpunit>
