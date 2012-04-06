@@ -1,29 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="webpie" basedir="/data/www/webpie/" default="dist" description="a simple php framework">
     <property name="basedir" value="/data/www/webpie/" override="true" />
-    <property name="reportsdir" value="/data/www/webpie/build/reports/" override="true" />
+    <property name="logsdir" value="/data/www/webpie/build/logs/" override="true" />
     <property name="coredir" value="/data/www/webpie/core/" override="true" />
-    <target name="check" description="to check">
+
+    <target name="clean" description="to clean logs">
+        <echo msg="清除报告目录" />
+        <delete dir="${logsdir}" />
+    </target>
+
+    <target name="prepare" depends="clean" description="prepare to build">
+        <echo msg="创建干净的logs目录" />
+        <mkdir dir="${logsdir}" />
+    </target>
+
+    <target name="check" depends="prepare" description="to check">
         <echo msg="运行phpcs检查代码规范" />
         <echo msg="运行pdepend检查代码的依赖关系" />
         <phpdepend>
             <fileset dir="${coredir}" />
-            <logger type="jdepend-xml" outfile="${reportsdir}depend.xml" />
+            <logger type="jdepend-xml" outfile="${logsdir}depend.xml" />
         </phpdepend>
         <echo msg="运行phpmd检查代码的坏味道" />
         <phpmd>
             <fileset dir="${coredir}" />
-            <formatter type="xml" outfile="${reportsdir}md.xml" />
+            <formatter type="xml" outfile="${logsdir}md.xml" />
         </phpmd>
         <echo msg="运行phpcpd检查代码的复用度" />
         <phpcpd>
             <fileset dir="${coredir}" />
-            <formatter type="pmd" outfile="${reportsdir}cpd.xml" />
+            <formatter type="pmd" outfile="${logsdir}cpd.xml" />
         </phpcpd>
         <echo msg="运行phpunit单元测试" />
-        <exec command="phpunit --log-junit ${reportsdir}phpunit.xml --coverage-clover ${reportsdir}phpunit.clover.xml -c test/webpieTest.xml" /> 
+        <exec command="phpunit --log-junit ${logsdir}phpunit.xml --coverage-clover ${logsdir}phpunit.clover.xml -c test/webpieTest.xml" /> 
         <echo msg="运行phploc统计项目代码" />
-        <exec command="phploc --log-xml ${reportsdir}loc.xml ${coredir}" /> 
+        <exec command="phploc --log-xml ${logsdir}loc.xml ${coredir}" /> 
     </target>
 
     <target name="dist" depends="check" description="push to github">
