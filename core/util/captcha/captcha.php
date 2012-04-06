@@ -101,12 +101,10 @@ class Webpie_Captcha
     /** GD image */
     public $im;
 
-    public function __construct($config = array()){}
+    public function __construct(){}
 
     public function createImage()
 	{
-        $ini = microtime(true);
-
         /** Initialization */
         $this->imageAllocate();
         

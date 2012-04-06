@@ -37,7 +37,7 @@ class Webpie
         $reqUri = substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '?'));
         $url = $this->envConf->get('url');
         $handler = NULL;
-        $handler_hooks = NULL;
+        $handlerHooks = NULL;
         $handlerSuccess = false;
         foreach($url as $u)
         {

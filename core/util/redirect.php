@@ -25,7 +25,7 @@ class Webpie_Redirect
 			$msg = implode($_ENV['envConf']->get('logStage'), $msg);
 
 		if($_ENV['envConf']->getReqWith())
-			echo json_encode(array('retUrl' => $retUrl, 'msg' => $msg), 'status' => $status);
+			echo json_encode(array('retUrl' => $retUrl, 'msg' => $msg, 'status' => $status));
 		else if($retUrl)
 			header('Location:' . $retUrl);
 

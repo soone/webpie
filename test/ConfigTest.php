@@ -46,7 +46,7 @@ class ConfigTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals($importStr['dba']['user'], $this->cObj->get('dba->user'));
 		$this->assertEquals($importStr['dba']['pass'], $this->cObj->get('dba->pass'));
 
-		$importStr = './configFile.php';
+		$importStr = '/data/www/webpie/test/configFile.php';
 		$this->cObj->import($importStr);
 		$this->assertEquals(false, $this->cObj->get('debug'));
 		$this->assertEquals(1.1, $this->cObj->get('version'));

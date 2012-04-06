@@ -12,7 +12,7 @@ abstract class Webpie_Dal_Cacheabstract
 	abstract public function decr($key, $offset = NULL);
 	abstract public function incr($key, $offset = NULL);
 	abstract public function del($key);
-	public function __call($method, $args)
+	public function __call($func, $args)
 	{
 		if(method_exists($this->curCacheObj, $func))
 		{
