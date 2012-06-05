@@ -36,6 +36,7 @@ class Webpie_Dal_Redis extends Webpie_Dal_Cacheabstract
 		{
 			$this->cacheObj[$name] = new Redis;
 			$this->cacheObj[$name]->connect($this->setting['host'], $this->setting['port'], $this->setting['timeout']);
+			$this->cacheObj[$name]->setOption(Redis::OPT_SERIALIZER, Redis::SERIALIZER_PHP); 
 
 			if(!empty($this->setting['options']))
 			{
