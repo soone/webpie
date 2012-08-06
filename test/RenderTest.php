@@ -1,5 +1,5 @@
 <?php
-require_once '/data/www/webpie/core/webpie.php';
+require_once 'request.php';
 class RenderTest extends PHPUnit_Framework_TestCase
 {
 	public $cObj = NULL;
