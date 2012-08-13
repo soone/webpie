@@ -49,13 +49,14 @@ class Webpie
             if($regx[strlen($regx) - 1] != '$')
                 $regx = $regx . '$';
 
-            if(preg_match($regx, $reqUri) === True)
+            if(preg_match('/' . $regx . '/i', $reqUri) > 0)
             {
                 $handlerSuccess = true;
                 $handler = $u[1];
                 //预置handler的钩子，会在handler初始化时触发
                 !empty($u[2]) ? $handlerHooks = $u[2] : '';
                 $this->handler($handler, $handlerHooks);
+				break;
             }
         }
 
@@ -172,13 +173,13 @@ class Webpie
         $cn = strtolower($class);
         if(isset($classes[$cn]))
         {
-            require ((strpos($cn, 'webpie') !== False) ? dirname(__FILE__) . DS : $this->envConf->get('projectRoot')) . $classes[$cn];
+            require_once ((strpos($cn, 'webpie') !== False) ? dirname(__FILE__) . DS : $this->envConf->get('projectRoot')) . $classes[$cn];
         }
         else
         {
             $oriFile = $this->envConf->get('projectRoot', './') . str_replace('_', DS, $class) . '.php';
             if(is_file($oriFile))
-                require $oriFile;
+                require_once $oriFile;
         }
     }
 

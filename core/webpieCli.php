@@ -1,5 +1,5 @@
 <?php
-require_once './webpie.php';
+require_once dirname(__FILE__) . '/webpie.php';
 
 class WebpieCli extends Webpie
 {
@@ -22,7 +22,6 @@ class WebpieCli extends Webpie
     */
     public function start()
     {
-		var_dump($argv);
         $reqUri = substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '?'));
         $url = $this->envConf->get('url');
         $handler = NULL;
@@ -38,13 +37,14 @@ class WebpieCli extends Webpie
             if($regx[strlen($regx) - 1] != '$')
                 $regx = $regx . '$';
 
-            if(preg_match($regx, $reqUri) === True)
+            if(preg_match('/' . $regx . '/i', $reqUri) > 0)
             {
                 $handlerSuccess = true;
                 $handler = $u[1];
                 //预置handler的钩子，会在handler初始化时触发
                 !empty($u[2]) ? $handlerHooks = $u[2] : '';
                 $this->handler($handler, $handlerHooks);
+				break;
             }
         }
 
