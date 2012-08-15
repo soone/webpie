@@ -8,5 +8,5 @@
 */
 interface Webpie_Hook_Interface
 {
-	public function setup($vars);
+	public function setup($vars = NULL);
 }

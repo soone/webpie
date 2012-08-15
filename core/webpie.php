@@ -165,6 +165,9 @@ class Webpie
             'webpie_captcha' => 'util/captcha/captcha.php',
             'webpie_inputs' => 'util/inputs.php',
             'webpie_valid' => 'util/inputs.php',
+			'webpie_hook' => 'util/hook/hook.php',
+			'webpie_hook_interface' => 'util/hook/interface.php',
+			'webpie_hook_exception' => 'util/hook/hook.php',
         );
 
         global $classMap;

@@ -6,4 +6,4 @@
 * @version 0.1
 * @date 2012-08-16
 */
-class Webpie_Hook_Exception extends Exception{}
+class Webpie_Hook_Exception extends Webpie_Exception{}
