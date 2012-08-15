@@ -22,7 +22,8 @@ class WebpieCli extends Webpie
     */
     public function start()
     {
-        $reqUri = substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '?'));
+		global $argv;
+        $reqUri = empty($argv[1]) ? '' : trim($argv[1]);
         $url = $this->envConf->get('url');
         $handler = NULL;
         $handlerHooks = NULL;
