@@ -34,7 +34,8 @@ class Webpie
     */
     public function start()
     {
-        $reqUri = substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '?'));
+		$uriPos = strrpos($_SERVER['REQUEST_URI'], '?');
+        $reqUri = $uriPos ? substr($_SERVER['REQUEST_URI'], 0, $uriPos) : substr($_SERVER['REQUEST_URI'], 0);
         $url = $this->envConf->get('url');
         $handler = NULL;
         $handlerHooks = NULL;
@@ -177,7 +178,7 @@ class Webpie
         }
         else
         {
-            $oriFile = $this->envConf->get('projectRoot', './') . str_replace('_', DS, $class) . '.php';
+			$oriFile = $this->envConf->get('projectRoot', './') . implode(DS, array_map(function($v){return strtolower($v);}, explode('_', $class))) . '.php';
             if(is_file($oriFile))
                 require_once $oriFile;
         }
