@@ -208,7 +208,6 @@ class Webpie
             case E_USER_ERROR:
                 $errMsg = sprintf($fmtMsg, 'My ERROR', $errno, $errstr, $errfile, $errline);
                 self::msgHandler($errMsg);
-                exit(1);
                 break;
 
             case E_USER_WARNING:
