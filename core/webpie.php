@@ -56,8 +56,7 @@ class Webpie
                 $handler = $u[1];
                 //预置handler的钩子，会在handler初始化时触发
                 !empty($u[2]) ? $handlerHooks = $u[2] : '';
-                $this->handler($handler, $handlerHooks);
-				break;
+                return $this->handler($handler, $handlerHooks);
             }
         }
 
@@ -197,7 +196,7 @@ class Webpie
     *
     * @returns   
     */
-    public function errorHandler($errno, $errstr, $errfile, $errline)
+    public static function errorHandler($errno, $errstr, $errfile, $errline)
     {
         if(!(error_reporting() & $errno)) return;
         $fmtMsg = '%s:[%d] %s in file %s on line %d' . $_ENV['envConf']->get('logStage');
