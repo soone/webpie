@@ -5,7 +5,7 @@ class Webpie_Module
 {
 	public function __construct(){}
 
-	protected function getByCacheAndDb($cKey, $cObj, array $dbObj)
+	public function getByCacheAndDb($cKey, $cObj, array $dbObj)
 	{
 		if(!is_object($cObj))
 			throw new Webpie_Module_Exception('No cache object');

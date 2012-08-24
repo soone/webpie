@@ -147,6 +147,8 @@ class Webpie
             'webpie_handler_exception' => 'handler.php',
             'webpie_model' => 'model.php',
             'webpie_model_exception' => 'model.php',
+            'webpie_module' => 'module.php',
+            'webpie_module_exception' => 'module.php',
             'webpie_render' => 'render/render.php',
             'webpie_render_exception' => 'render/render.php',
             'webpie_render_interface' => 'render/interface.php',
