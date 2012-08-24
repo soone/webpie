@@ -63,7 +63,7 @@ class Webpie_Dal_Redis extends Webpie_Dal_Cacheabstract
 		if(in_array($obj, $this->cacheObj))
 			$this->curCacheObj = $obj;
 		else
-			throw new Webpie_Dal_Exception('Dal Cache Error:You not connect the cache');
+			throw new Webpie_Dal_Exception('Dal Cache Error:You are not connect the cache');
 
 		return $this;
 		
