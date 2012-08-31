@@ -9,9 +9,7 @@ class Webpie_Dal
 
 	public function __construct(array $dalInfo)
 	{
-		$this->type = $dalInfo['type'];
-		unset($dalInfo['type']);
-		$this->dalInfo = $dalInfo;
+		$this->setDalInfo($dalInfo);
 	}
 
 	public function factory()
@@ -36,6 +34,13 @@ class Webpie_Dal
 			default:
 				throw new Webpie_Dal_Exception('Unknown dal type');
 		}
+	}
+
+	public function setDalInfo(array $dalInfo)
+	{
+		$this->type = $dalInfo['type'];
+		unset($dalInfo['type']);
+		$this->dalInfo = $dalInfo;
 	}
 
 	protected function setCacheObj()
