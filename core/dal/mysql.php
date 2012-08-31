@@ -66,7 +66,7 @@ class Webpie_Dal_Mysql implements Webpie_Dal_Dbinterface
 		if(in_array($obj, $this->dbObj))
 			$this->curDbObj = $obj;
 		else
-			throw new Webpie_Dal_Exception('Dal Db Error:You not connect the db');
+			throw new Webpie_Dal_Exception('Dal Db Error:Can not connect the db');
 
 		return $this;
 	}
