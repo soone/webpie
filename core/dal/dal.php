@@ -3,28 +3,34 @@ class Webpie_Dal_Exception extends Webpie_Exception{}
 
 class Webpie_Dal
 {
+	public $type;
+	public $dalInfo;
 	protected $objType = NULL;
 
 	public function __construct(array $dalInfo)
 	{
-		$type = $dalInfo['type'];
+		$this->type = $dalInfo['type'];
 		unset($dalInfo['type']);
+		$this->dalInfo = $dalInfo;
+	}
 
-		switch($type)
+	public function factory()
+	{
+		switch($this->type)
 		{
 			case 'memcached':
 				$this->objType = 'Webpie_Dal_Memcache';
-				return $this->setCacheObj($dalInfo);
+				return $this->setCacheObj();
 				break;
 
 			case 'redis':
 				$this->objType = 'Webpie_Dal_Redis';
-				return $this->setCacheObj($dalInfo);
+				return $this->setCacheObj();
 				break;
 
 			case 'mysql':
 				$this->objType = 'Webpie_Dal_Mysql';
-				return $this->setDbObj($dalInfo);
+				return $this->setDbObj();
 				break;
 
 			default:
@@ -32,17 +38,17 @@ class Webpie_Dal
 		}
 	}
 
-	protected function setCacheObj($dalInfo)
+	protected function setCacheObj()
 	{
 		$cache = new $this->objType;
-		$cache->setCurCacheObj($cache->cacheConnect($cache->cacheSetting($cacheInfo)));
+		$cache->setCurCacheObj($cache->cacheConnect($cache->cacheSetting($this->dalInfo)));
 		return $cache;
 	}
 
-	protected function setDbObj($dalInfo)
+	protected function setDbObj()
 	{
 		$db = new $this->objType;
-		$db->setCurDbObj($db->dbConnect($db->dbSetting($dalInfo)));
+		$db->setCurDbObj($db->dbConnect($db->dbSetting($this->dalInfo)));
 		return $db;
 	}
 }
