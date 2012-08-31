@@ -234,7 +234,7 @@ class Webpie
     *
     * @returns   
     */
-    public function exceptionHandler($e)
+    public static function exceptionHandler($e)
     {
         $exceptionName = get_class($e);
         $fmtMsg = 'Exception(%s):[%s] %s in file %s on line %d' . $_ENV['envConf']->get('logStage');
