@@ -18,7 +18,7 @@ class Webpie_Handler
 			return False;
 
 		$msg = array();
-		foreach($filters as $f)
+		foreach($filters as $fk => $f)
 		{
 			foreach($f[0] as $k => $v)
 			{
@@ -28,6 +28,8 @@ class Webpie_Handler
 				{
 					$msg[] = $valid->alertMsg;
 				}
+				else
+					$_ENV[$fk][$k] = $valid->validVar;
 			}
 		}
 
