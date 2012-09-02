@@ -7,6 +7,33 @@ class Webpie_Handler
 
 	public function __construct(){}
 
+	public function checkInput()
+	{
+		if($_ENV['envConf']->import($_ENV['envConf']->get('projectConf') . 
+					$_ENV['envConf']->get('router')['control'] . 'Conf.php') === False)
+			return False;
+
+		$filters = $_ENV['envConf']->get($_ENV['envConf']->get('router')['action']);
+		if(empty($filters))
+			return False;
+
+		$msg = array();
+		foreach($filters as $f)
+		{
+			foreach($f[0] as $k => $v)
+			{
+				if(empty($f[1][$k])) continue;
+				$valid = new Webpie_Valid($v, $f[1][$k]);
+				if($valid->toValid() === False)
+				{
+					$msg[] = $valid->alertMsg;
+				}
+			}
+		}
+
+		return empty($msg) ? True : $msg;
+	}
+
 	/**
 	* @name render 
 	*
