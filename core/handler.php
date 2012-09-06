@@ -20,10 +20,9 @@ class Webpie_Handler
 		$msg = array();
 		foreach($filters as $fk => $f)
 		{
-			foreach($f[0] as $k => $v)
+			foreach($f[1] as $k => $v)
 			{
-				if(empty($f[1][$k])) continue;
-				$valid = new Webpie_Valid($v, $f[1][$k]);
+				$valid = new Webpie_Valid($f[0][$k], $v);
 				if($valid->toValid() === False)
 				{
 					$msg[] = $valid->alertMsg;
@@ -31,6 +30,8 @@ class Webpie_Handler
 				else
 					$_ENV[$fk][$k] = $valid->validVar;
 			}
+
+			$_ENV[$fk] = empty($_ENV[$fk]) ? $f[0] : array_merge($_ENV[$fk], array_diff_assoc($_ENV[$fk], $f[0]));
 		}
 
 		return empty($msg) ? True : $msg;
