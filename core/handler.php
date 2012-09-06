@@ -13,7 +13,7 @@ class Webpie_Handler
 					$_ENV['envConf']->get('router')['control'] . 'Conf.php') === False)
 			return False;
 
-		$filters = $_ENV['envConf']->get($_ENV['envConf']->get('router')['action']);
+		$filters = strtolower($_ENV['envConf']->get($_ENV['envConf']->get('router')['action']));
 		if(empty($filters))
 			return False;
 
@@ -22,7 +22,7 @@ class Webpie_Handler
 		{
 			foreach($f[1] as $k => $v)
 			{
-				$valid = new Webpie_Valid($f[0][$k], $v);
+				$valid = new Webpie_Valid(empty($f[0][$k]) ? null : $f[0][$k], $v);
 				if($valid->toValid() === False)
 				{
 					$msg[] = $valid->alertMsg;
