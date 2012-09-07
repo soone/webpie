@@ -50,7 +50,7 @@ class Webpie_Dal_Mysql implements Webpie_Dal_Dbinterface
 			if($this->dbObj[$name]->connect_error)
 				throw new Webpie_Dal_Exception('Dal Db Connect Error(' . $this->dbObj[$name]->connect_errno . '):' . $this->dbObj[$name]->connect_error);
 
-			!empty($this->setting['charset']) ? $this->dbObj[$name]->set_charset($this->setting['charset']) : '';
+			$this->dbObj[$name]->set_charset(!empty($this->setting['charset']) ? $this->setting['charset']) : 'utf8');
 		}
 
 		return $this->dbObj[$name];
