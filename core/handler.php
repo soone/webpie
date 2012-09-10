@@ -31,7 +31,7 @@ class Webpie_Handler
 					$_ENV[$fk][$k] = $valid->validVar;
 			}
 
-			$_ENV[$fk] = empty($_ENV[$fk]) ? $f[0] : array_merge($_ENV[$fk], array_diff_assoc($_ENV[$fk], $f[0]));
+			$_ENV[$fk] = empty($_ENV[$fk]) ? $f[0] : array_merge($_ENV[$fk], array_diff_key($f[0], $_ENV[$fk]));
 		}
 
 		return empty($msg) ? True : $msg;
