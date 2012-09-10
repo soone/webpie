@@ -196,7 +196,7 @@ class Webpie_Valid
 		if(is_array($expect))
 		{
 			$var = &$this->validVar;
-			$mapFunc = function($func) use (&$var) {$var = call_user_func($func, $var);};
+			$mapFunc = function($func) use (&$var) {$var = call_user_func($func, $var);return $var;};
 			$mapRes = array_map($mapFunc, $expect);
 			if(in_array(false, $mapRes))
 			{
