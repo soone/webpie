@@ -22,7 +22,10 @@ class Webpie_Handler
 		{
 			foreach($f[1] as $k => $v)
 			{
-				$valid = new Webpie_Valid(empty($f[0][$k]) ? null : $f[0][$k], $v);
+				if(empty($f[0][$k]) && (empty($v['required']) || $v['required'] != 1))
+					continue;
+
+				$valid = new Webpie_Valid(empty($f[0][$k], $v);
 				if($valid->toValid() === False)
 				{
 					$msg[] = $valid->alertMsg;
