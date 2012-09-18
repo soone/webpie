@@ -5,6 +5,7 @@ class WebpieCliTest extends PHPUnit_Framework_TestCase
 	private $wp = NULL;
 	public function setUp()
 	{
+		require_once dirname(dirname(__FILE__)) . '/core/webpieCli.php';
 		$this->wp = new WebpieCli();
 		$this->cObj = Webpie_Config::getInstance();
 	}

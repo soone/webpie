@@ -52,12 +52,12 @@ class ConfigTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals(1.1, $this->cObj->get('version'));
 		$this->assertEquals('webpie', $this->cObj->get('framework'));
 		$this->assertEquals('mssql', $this->cObj->get('dba->type'));
-		$this->assertEquals('192.168.1.1', $this->cObj->get('dba->host'));
+		$this->assertEquals('localhost', $this->cObj->get('dba->host'));
 		$this->assertEquals('webpie', $this->cObj->get('dba->db'));
 		$this->assertEquals('root', $this->cObj->get('dba->user'));
 		$this->assertEquals('123456', $this->cObj->get('dba->pass'));
-		$this->assertEquals('192.168.19.1:8000', $this->cObj->get('cache->redis->0'));
-		$this->assertEquals('192.168.18.1:7999', $this->cObj->get('cache->memcache->0'));
+		$this->assertEquals('localhost:8000', $this->cObj->get('cache->redis->0'));
+		$this->assertEquals('localhost:7999', $this->cObj->get('cache->memcache->0'));
 	}
 
 	public function testGetAndSet()

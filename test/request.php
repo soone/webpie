@@ -1,3 +1,3 @@
 <?php
-define('WEBPIE', '/media/sf_Code/php/webpie/');
+define('WEBPIE', dirname(dirname(__FILE__)) . '/');
 require_once WEBPIE . 'core/webpie.php';

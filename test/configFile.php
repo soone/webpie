@@ -5,13 +5,13 @@ return array(
 	'debug' => false,
 	'dba' => array(
 		'type' => 'mssql',
-		'host' => '192.168.1.1',
+		'host' => 'localhost',
 		'db' => 'webpie',
 		'user' => 'root',
 		'pass' => '123456',
 	),
 	'cache' => array(
-		'redis' => array('192.168.19.1:8000'),
-		'memcache' => array('192.168.18.1:7999')
+		'redis' => array('localhost:8000'),
+		'memcache' => array('localhost:7999')
 	),
 );

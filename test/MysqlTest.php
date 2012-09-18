@@ -63,13 +63,15 @@ class MysqlTest extends PHPUnit_Framework_TestCase
 																								'order' => 'id desc',
 																								'callback' => function($id, $name){return array('id' => $id+1, 'name' => $name . '+1');}
 																							)));
+		$this->assertEquals(array(array('id' => 1, 'name' => 'Hartmut'), array('id' => 2, 'name' => 'Ulf')), $this->db->dbRead('*', array('where' => array('id IN ?', array(array(1, 2))))));
 	}
 
 	public function testDbUpdate()
 	{
 		$this->assertEquals(2, $this->db->dbUpdate('name = ?', array('soone')));
-		$this->assertEquals(1, $this->db->dbUpdate('name = ?', array('adou', 1), 'id = ?'));
-		$this->assertEquals(0, $this->db->dbUpdate('name = ?', array('adou', 1, 'soone'), 'id = ? AND name = ?'));
+		$this->assertEquals(1, $this->db->dbUpdate('name = ?', array('adou'), array('id = ?', array(1))));
+		$this->assertEquals(0, $this->db->dbUpdate('name = ?', array('adou'), array('id = ? AND name = ?', array(1, 'soone'))));
+		$this->assertEquals(1, $this->db->dbUpdate('name = ?', array('adou'), array('id IN ?', array(array(1, 2)))));
 	}
 
 	/**
@@ -89,6 +91,7 @@ class MysqlTest extends PHPUnit_Framework_TestCase
 			array(2, NULL, NULL),
 			array(1, 'id = ?', array(1)),
 			array(2, 'name <> ?', array('')),
+			array(2, 'id IN ?', array(array(1, 2))),
 		);
 	}
 }

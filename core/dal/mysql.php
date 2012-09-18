@@ -50,7 +50,7 @@ class Webpie_Dal_Mysql implements Webpie_Dal_Dbinterface
 			if($this->dbObj[$name]->connect_error)
 				throw new Webpie_Dal_Exception('Dal Db Connect Error(' . $this->dbObj[$name]->connect_errno . '):' . $this->dbObj[$name]->connect_error);
 
-			$this->dbObj[$name]->set_charset(!empty($this->setting['charset']) ? $this->setting['charset']) : 'utf8');
+			$this->dbObj[$name]->set_charset(!empty($this->setting['charset']) ? $this->setting['charset'] : 'utf8');
 		}
 
 		return $this->dbObj[$name];
@@ -153,8 +153,13 @@ class Webpie_Dal_Mysql implements Webpie_Dal_Dbinterface
 	public function dbRead($columns, $options = NULL)
 	{
 		$sql = 'SELECT ' . $columns . ' FROM ' . $this->curTable;
-		if(!empty($options['where']))
-			$sql .= ' WHERE ' . $options['where'][0];
+		$values = '';
+		if(!empty($options['where']) && count($options['where']) == 2)
+		{
+			$validWhere = $this->setWhere($options['where'][0], $options['where'][1]);
+			$sql .= $validWhere[0];
+			$values = $validWhere[1];
+		}
 
 		if(!empty($options['order']))
 			$sql .= ' ORDER BY ' . $options['order'];
@@ -166,9 +171,9 @@ class Webpie_Dal_Mysql implements Webpie_Dal_Dbinterface
 		if($stmt === false)
 			throw new Webpie_Dal_Exception('Dal Db Error(' . $this->curDbObj->errno . '):' . $this->curDbObj->error);
 
-		if(!empty($options['where']))
+		if(!empty($options['where']) && !empty($values))
 		{
-			if(call_user_func_array(array($stmt, 'bind_param'), $this->setBindParams($options['where'][1])) === false)
+			if(call_user_func_array(array($stmt, 'bind_param'), $this->setBindParams($values)) === false)
 				throw new Webpie_Dal_Exception('Dal Db Error(' . $stmt->errno . '):' . $stmt->error);
 		}
 
@@ -225,15 +230,22 @@ class Webpie_Dal_Mysql implements Webpie_Dal_Dbinterface
 	public function dbUpdate($columns, $values, $where = NULL)
 	{
 		$sql = 'UPDATE ' . $this->curTable . ' SET ' . $columns;
-		if(!empty($where))
-			$sql .= ' WHERE ' . $where;
+		if(!empty($where) && count($where) == 2)
+		{
+			$validWhere = $this->setWhere($where[0], $where[1]);
+			$sql .= $validWhere[0];
+			$values = array_merge($values, $validWhere[1]);
+		}
 
 		$stmt = $this->curDbObj->prepare($sql);
 		if($stmt === false)
 			throw new Webpie_Dal_Exception('Dal Db Error(' . $this->curDbObj->errno . '):' . $this->curDbObj->error);
 
-		if(call_user_func_array(array($stmt, 'bind_param'), $this->setBindParams($values)) === false)
-			throw new Webpie_Dal_Exception('Dal Db Error(' . $stmt->errno . '):' . $stmt->error);
+		if(!empty($values))
+		{
+			if(call_user_func_array(array($stmt, 'bind_param'), $this->setBindParams($values)) === false)
+				throw new Webpie_Dal_Exception('Dal Db Error(' . $stmt->errno . '):' . $stmt->error);
+		}
 
 		if($stmt->execute() === false)
 			throw new Webpie_Dal_Exception('Dal Db Error(' . $stmt->errno . '):' . $stmt->error);
@@ -253,16 +265,21 @@ class Webpie_Dal_Mysql implements Webpie_Dal_Dbinterface
 	public function dbDelete($whereCol = NULL, $colVal = NULL)
 	{
 		$sql = 'DELETE FROM ' . $this->curTable;
+		$values = '';
 		if(!empty($whereCol))
-			$sql .= ' WHERE ' . $whereCol;
+		{
+			$validWhere = $this->setWhere($whereCol, $colVal);
+			$sql .= $validWhere[0];
+			$values = $validWhere[1];
+		}
 
 		$stmt = $this->curDbObj->prepare($sql);
 		if($stmt === false)
 			throw new Webpie_Dal_Exception('Dal Db Error(' . $this->curDbObj->errno . '):' . $this->curDbObj->error);
 
-		if(!empty($whereCol) && !empty($colVal))
+		if(!empty($whereCol) && !empty($values))
 		{
-			if(call_user_func_array(array($stmt, 'bind_param'), $this->setBindParams($colVal)) === false)
+			if(call_user_func_array(array($stmt, 'bind_param'), $this->setBindParams($values)) === false)
 				throw new Webpie_Dal_Exception('Dal Db Error(' . $stmt->errno . '):' . $stmt->error);
 		}
 
@@ -350,5 +367,36 @@ class Webpie_Dal_Mysql implements Webpie_Dal_Dbinterface
 		{
 			is_object($db) ? $db->close() : '';
 		}
+	}
+
+	private function setWhere($column, $value = array())
+	{
+		$where = ' WHERE ';
+		if(strpos($column, '?') === FALSE || !$value)
+			return array($where . $column, $value);
+
+		$whereArr = explode('?', $column, -1);
+		$sizeWhere = count($whereArr);
+		$tempWhere = '';
+		for($i = 0; $i < $sizeWhere; $i++)
+		{
+			if(is_array($value[$i]))
+			{
+				$r = '';
+				$dot = '';
+				foreach($value[$i] as $ev)
+				{
+					$r .= $dot . '"' . $this->curDbObj->real_escape_string($ev). '"';
+					if(!$dot)
+						$dot = ',';
+				}
+				$tempWhere .=  $whereArr[$i] . '(' . $r . ')';
+				unset($value[$i]);
+			}
+			else
+				$tempWhere .= $whereArr[$i] . '?';
+		}
+
+		return array($where . $tempWhere, $value);
 	}
 }
