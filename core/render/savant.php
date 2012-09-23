@@ -1,11 +1,11 @@
 <?php
-class Webpie_Render_Smarty extends Webpie_Render_Interface
+class Webpie_Render_Savant extends Webpie_Render_Interface
 {
 	public $render = NULL;
-	public function __construct($setting)
+	public function __construct($setting = array())
 	{
-		include __DIR__ . DS . 'smarty' . DS . 'Smarty.class.php';
-		$this->render = new Smarty;
+		require_once file_exists(__DIR__ . DS . 'savant3' . DS . 'Savant3.php') ?  __DIR__ . DS . 'savant3' . DS . 'Savant3.php' : 'Savant3.php';
+		$this->render = new Savant3;
 		foreach($setting as $key => $val)
 		{
 			$this->render->$key = $val;
@@ -17,7 +17,7 @@ class Webpie_Render_Smarty extends Webpie_Render_Interface
 	*
 	* @returns   
 	*/
-	public function display(/*$tpl, $assign = NULL*/)
+	public function display()
 	{
 		if(func_num_args() < 1)
 			throw new Webpie_Render_Exception('至少需要一个参数，即模板名称');
@@ -25,7 +25,7 @@ class Webpie_Render_Smarty extends Webpie_Render_Interface
 		$args = func_get_args();
 		$res = $this->toAssign($args);
 
-		return $this->render->display($res['tpl'], $res['cacheId'], $res['compileId']);
+		return $this->render->display($res);
 	}
 
 	/**
@@ -33,7 +33,7 @@ class Webpie_Render_Smarty extends Webpie_Render_Interface
 	*
 	* @returns   
 	*/
-	public function fetch(/*$tpl, $assign = NULL*/)
+	public function fetch()
 	{
 		if(func_num_args() < 1)
 			throw new Webpie_Render_Exception('至少需要一个参数，即模板名称');
@@ -41,7 +41,7 @@ class Webpie_Render_Smarty extends Webpie_Render_Interface
 		$args = func_get_args();
 		$res = $this->toAssign($args);
 
-		return $this->render->fetch($res['tpl'], $res['cacheId'], $res['compileId']);
+		return $this->render->fetch($res);
 	}
 
 	/**
@@ -53,18 +53,10 @@ class Webpie_Render_Smarty extends Webpie_Render_Interface
 	*/
 	protected function toAssign($args)
 	{
-		$res = array('tpl' => NULL, 'cacheId' => NULL, 'compileId' => NULL);
-		$res['tpl'] = $args[0];
 		if(!empty($args[1]))
-			array_walk($args[1], function($arg, $val){$this->render->assign($arg, $val);});
+			$this->render->assign($args[1]);
 
-		if(!empty($args[2]))
-			$res['cacheId'] = $args[2];
-
-		if(!empty($args[3]))
-			$res['compileId'] = $args[3];
-
-		return $res;
+		return $args[0];
 	}
 
 	/**
@@ -77,7 +69,7 @@ class Webpie_Render_Smarty extends Webpie_Render_Interface
 	public function get($var)
 	{
 		if(!property_exists(__CLASS__, $var))
-			return $this->render->$var;
+			return $this->savant->$var;
 		else
 			return $this->$var;
 	}
@@ -93,8 +85,21 @@ class Webpie_Render_Smarty extends Webpie_Render_Interface
 	public function set($var, $val)
 	{
 		if(!property_exists(__CLASS__, $var))
-			$this->render->$var = $val;
+			$this->savant->$var = $val;
 		else
 			$this->$var = $val;
+	}
+
+	/**
+	 * @name __call 
+	 *
+	 * @param $name
+	 * @param $arguments
+	 *
+	 * @return 
+	 */
+	public function __call($name, $arguments)
+	{
+		return call_user_func_array(array($this->savant, $name), $arguments);
 	}
 }

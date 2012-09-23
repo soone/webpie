@@ -18,7 +18,7 @@ class RenderTest extends PHPUnit_Framework_TestCase
 			'right_delimiter' => '}-->'
 		);
 
-		$view = new Webpie_Render($setting);
+		$view = new Webpie_Render_Smarty($setting);
 		$this->assertEquals($view->get('debugging'), true);
 		$this->assertEquals($view->get('caching'), true);
 		$this->assertEquals($view->get('left_delimiter'), '<!--{');

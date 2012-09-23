@@ -54,12 +54,7 @@ class Webpie_Handler
 		if(!is_object($this->view))//进行模板引擎初始化
 		{
 			$templateConf = $_ENV['envConf']->get('templateConf');
-			if($templateConf['engine'] == 'smarty')
-				$className = 'Webpie_Render';
-			else
-				$className = $templateConf['engine'];
-
-			$this->view = new $className($templateConf['setting']);
+			$this->view = new $templateConf['engine']($templateConf['setting']);
 		}
 
 		if($fetch)
