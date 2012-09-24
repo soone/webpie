@@ -192,4 +192,14 @@ class Webpie_Dal_Redis extends Webpie_Dal_Cacheabstract
 	{
 		return $this->curCacheObj->delete($key);
 	}
+
+	/**
+	 * @name getCurCacheObj 
+	 *
+	 * @return 
+	 */
+	public function getCurCacheObj()
+	{
+		return $this->curCacheObj;
+	}
 }

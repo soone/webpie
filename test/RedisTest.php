@@ -159,4 +159,19 @@ class RedisTest extends PHPUnit_Framework_TestCase
 			array('k6', 1),
 		);
 	}
+
+	/**
+	 * @name testLpush 
+	 *
+	 * @dataProvide listPro
+	 * @param $key
+	 * @param $val
+	 *
+	 * @return 
+	 */
+	public function testLpush()
+	{
+		$this->cache->lPush('test', 1);
+		$this->assertEquals($this->cache->rpop('test'), 1);
+	}
 }

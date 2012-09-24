@@ -13,9 +13,9 @@ class Webpie_Handler
 					$_ENV['envConf']->get('router')['control'] . 'Conf.php') === False)
 			return False;
 
-		$filters = $_ENV['envConf']->get(strtolower($_ENV['envConf']->get('router')['action']));
+		$filters = $_ENV['envConf']->get(strtolower($_ENV['envConf']->get('router')['action']), '');
 		if(empty($filters))
-			return False;
+			return TRUE;
 
 		$msg = array();
 		foreach($filters as $fk => $f)

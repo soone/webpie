@@ -14,7 +14,8 @@ abstract class Webpie_Dal_Cacheabstract
 	abstract public function del($key);
 	public function __call($func, $args)
 	{
-		if(method_exists($this->curCacheObj, $func))
+		$curCacheObj = $this->getCurCacheObj();
+		if(method_exists($curCacheObj, $func))
 		{
 			if(count($args) > 1)
 			{
@@ -24,10 +25,10 @@ abstract class Webpie_Dal_Cacheabstract
 					$argArr[] = &$args[$i];
 				}
 
-				return call_user_func_array(array($this->curCacheObj, $func), $args);
+				return call_user_func_array(array($curCacheObj, $func), $args);
 			}
 			else
-				return call_user_func(array($this->curCacheObj, $func), $args);
+				return call_user_func(array($curCacheObj, $func), $args);
 		}
 		else
 			throw new Webpie_Dal_Exception('Dal Cache Error: No Invalid method');

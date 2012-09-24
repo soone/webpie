@@ -6,6 +6,7 @@ class Webpie_Redirect
 		'200' => '200 OK',
 		'50x' => '503 Service Unavailable',
 		'30x' => '303 See Other',
+		'302' => '302 Moved Temporarily',
 	);
 	
 	/**

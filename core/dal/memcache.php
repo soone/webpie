@@ -204,4 +204,14 @@ class Webpie_Dal_Memcache extends Webpie_Dal_Cacheabstract
 		else
 			return $this->curCacheObj->delete($key);
 	}
+
+	/**
+	 * @name getCurCacheObj 
+	 *
+	 * @return 
+	 */
+	public function getCurCacheObj()
+	{
+		return $this->curCacheObj;
+	}
 }
