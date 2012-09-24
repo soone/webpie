@@ -26,7 +26,7 @@ class Webpie_Handler
 				if(empty($f[0][$k]) && (empty($v['required']) || $v['required'] != 1))
 					continue;
 
-				$valid = new Webpie_Valid($f[0][$k], $v);
+				$valid = new Webpie_Valid(empty($f[0][$k]) ? '' : $f[0][$k], $v);
 				if($valid->toValid() === False)
 				{
 					$msg[] = $valid->alertMsg;
