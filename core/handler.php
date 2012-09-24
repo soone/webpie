@@ -5,15 +5,16 @@ class Webpie_Handler
 {
 	public $view = NULL;
 
-	public function __construct(){}
+	public function __construct()
+	{
+		$_ENV['envConf']->import($_ENV['envConf']->get('projectConf') . 
+					$_ENV['envConf']->get('router')['control'] . 'Conf.php');
+	}
 
 	public function checkInput()
 	{
-		if($_ENV['envConf']->import($_ENV['envConf']->get('projectConf') . 
-					$_ENV['envConf']->get('router')['control'] . 'Conf.php') === False)
-			return False;
-
-		$filters = $_ENV['envConf']->get(strtolower($_ENV['envConf']->get('router')['action']), '');
+		$router = $_ENV['envConf']->get('router');
+		$filters = $_ENV['envConf']->get($router['control'] . '->filters->' . strtolower($router['action']), '');
 		if(empty($filters))
 			return TRUE;
 

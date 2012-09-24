@@ -77,6 +77,16 @@ class Webpie_Config
 				unset($arrayVar[0]);
 				foreach($arrayVar as $strVar)
 				{
+					if(!isset($res[$strVar]))
+					{
+						if($val !== NULL)
+						{
+							$res = $val;
+							break;
+						}
+						else
+							throw new Webpie_Config_Exception('配置属性不存在');
+					}
 					$res = $res[$strVar];
 				}
 			}

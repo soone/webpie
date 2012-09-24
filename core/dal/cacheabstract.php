@@ -20,7 +20,7 @@ abstract class Webpie_Dal_Cacheabstract
 			if(count($args) > 1)
 			{
 				$argArr = array();
-				for($i = 0, $j < count($args); $i < $j; $i++)
+				for($i = 0, $j = count($args); $i < $j; $i++)
 				{
 					$argArr[] = &$args[$i];
 				}
