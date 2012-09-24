@@ -6,10 +6,8 @@ class Webpie_Render_Savant extends Webpie_Render_Interface
 	{
 		require_once file_exists(__DIR__ . DS . 'savant3' . DS . 'Savant3.php') ?  __DIR__ . DS . 'savant3' . DS . 'Savant3.php' : 'Savant3.php';
 		$this->render = new Savant3;
-		foreach($setting as $key => $val)
-		{
-			$this->render->$key = $val;
-		}
+		!empty($setting['tmplDir']) ? $this->render->setPath('template', $setting['tmplDir']) : '';
+		!empty($setting['resDir']) ? $this->render->setPath('resource', $setting['resDir']) : '';
 	}
 
 	/**
@@ -23,9 +21,9 @@ class Webpie_Render_Savant extends Webpie_Render_Interface
 			throw new Webpie_Render_Exception('至少需要一个参数，即模板名称');
 
 		$args = func_get_args();
-		$res = $this->toAssign($args);
+		!empty($args[1]) ? $this->toAssign($args[1]) : '';
 
-		return $this->render->display($res);
+		return $this->render->display($args[0]);
 	}
 
 	/**
@@ -39,9 +37,9 @@ class Webpie_Render_Savant extends Webpie_Render_Interface
 			throw new Webpie_Render_Exception('至少需要一个参数，即模板名称');
 
 		$args = func_get_args();
-		$res = $this->toAssign($args);
+		!empty($args[1]) ? $this->toAssign($args[1]) : '';
 
-		return $this->render->fetch($res);
+		return $this->render->fetch($args[0]);
 	}
 
 	/**
@@ -53,10 +51,7 @@ class Webpie_Render_Savant extends Webpie_Render_Interface
 	*/
 	protected function toAssign($args)
 	{
-		if(!empty($args[1]))
-			$this->render->assign($args[1]);
-
-		return $args[0];
+		return $this->render->assign($args);
 	}
 
 	/**
