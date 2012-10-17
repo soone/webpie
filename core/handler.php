@@ -11,10 +11,10 @@ class Webpie_Handler
 					$_ENV['envConf']->get('router')['control'] . 'Conf.php');
 	}
 
-	public function checkInput()
+	public function checkInput($filter = NULL)
 	{
 		$router = $_ENV['envConf']->get('router');
-		$filters = $_ENV['envConf']->get($router['control'] . '->filters->' . strtolower($router['action']), '');
+		$filters = $_ENV['envConf']->get($router['control'] . '->filters->' . ($filter ? strtolower($filter) : strtolower($router['action'])), '');
 		if(empty($filters))
 			return TRUE;
 
