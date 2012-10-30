@@ -196,6 +196,11 @@ class Webpie_Dal_Mysql implements Webpie_Dal_Dbinterface
 			$fields = explode(',', $columns);
 			foreach($fields as $name)
 			{
+				$matches = array();
+				preg_match('/\sas\s(.*)$/i', $name, $matches);
+				if(count($matches) > 1)
+					$name = $matches[1];
+
 				$field[] = &$col[trim($name)];
 			}
 		}
