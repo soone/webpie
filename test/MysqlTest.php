@@ -64,6 +64,12 @@ class MysqlTest extends PHPUnit_Framework_TestCase
 																								'callback' => function($id, $name){return array('id' => $id+1, 'name' => $name . '+1');}
 																							)));
 		$this->assertEquals(array(array('id' => 1, 'name' => 'Hartmut'), array('id' => 2, 'name' => 'Ulf')), $this->db->dbRead('*', array('where' => array('id IN ?', array(array(1, 2))))));
+
+		$this->assertEquals(array(array('id' => 1, 'name' => 'Hartmut'), array('id' => 2, 'name' => 'Ulf')), $this->db->dbRead('*', array('where' => array('name like ?', array('%u%')))));
+
+		$this->assertEquals(array(array('id' => 1, 'name' => 'Hartmut')), $this->db->dbRead('*', array('where' => array('name like ?', array('%u%')), 'group' => array('name Having id = ?', array(1)))));
+
+		$this->assertEquals(array(array('id' => 1, 'name' => 'Hartmut'), array('id' => 2, 'name' => 'Ulf')), $this->db->dbRead('*', array('where' => array('name like ?', array('%u%')), 'group' => array('name'))));
 	}
 
 	public function testDbUpdate()
@@ -93,5 +99,10 @@ class MysqlTest extends PHPUnit_Framework_TestCase
 			array(2, 'name <> ?', array('')),
 			array(2, 'id IN ?', array(array(1, 2))),
 		);
+	}
+
+	public function testDbCOU()
+	{
+		$this->assertEquals(1, $this->db->dbCOU('id, name', array(3, 'soone')));
 	}
 }

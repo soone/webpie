@@ -153,12 +153,19 @@ class Webpie_Dal_Mysql implements Webpie_Dal_Dbinterface
 	public function dbRead($columns, $options = NULL)
 	{
 		$sql = 'SELECT ' . $columns . ' FROM ' . $this->curTable;
-		$values = '';
+		$values = array();
 		if(!empty($options['where']) && count($options['where']) == 2)
 		{
 			$validWhere = $this->setWhere($options['where'][0], $options['where'][1]);
 			$sql .= $validWhere[0];
 			$values = $validWhere[1];
+		}
+
+		if(!empty($options['group']) && count($options['group']) >= 1)
+		{
+			$validWhere = $this->setWhere($options['group'][0], !empty($options['group'][1]) ? $options['group'][1] : array(), TRUE);
+			$sql .= $validWhere[0];
+			$values = array_merge($values, $validWhere[1]);
 		}
 
 		if(!empty($options['order']))
@@ -171,7 +178,7 @@ class Webpie_Dal_Mysql implements Webpie_Dal_Dbinterface
 		if($stmt === false)
 			throw new Webpie_Dal_Exception('Dal Db Error(' . $this->curDbObj->errno . '):' . $this->curDbObj->error);
 
-		if(!empty($options['where']) && !empty($values))
+		if((!empty($options['group']) || !empty($options['where'])) && !empty($values))
 		{
 			if(call_user_func_array(array($stmt, 'bind_param'), $this->setBindParams($values)) === false)
 				throw new Webpie_Dal_Exception('Dal Db Error(' . $stmt->errno . '):' . $stmt->error);
@@ -296,6 +303,16 @@ class Webpie_Dal_Mysql implements Webpie_Dal_Dbinterface
 		return $affecteds;
 	}
 
+	public function dbCOU($columns, $values)
+	{
+		//$sql = 'INSERT INTO ' . $this->curTable . '(' . $columns . ')VALUES(' . rtrim(str_repeat('?,', count($values)), ',') . ')';
+		//var_dump($sql);
+		//foreach($values as $v)
+		//{
+		//	$vals[]= $this->curDbObj->real_escape_string($v);
+		//}
+	}
+
 	/**
 	* @name setBindParams 用来设置prepare的时候需要bind_param的时候的引用
 	*
@@ -374,9 +391,9 @@ class Webpie_Dal_Mysql implements Webpie_Dal_Dbinterface
 		}
 	}
 
-	private function setWhere($column, $value = array())
+	private function setWhere($column, $value = array(), $type = NULL)
 	{
-		$where = ' WHERE ';
+		$where = !$type ? ' WHERE ' : ' GROUP BY ';
 		if(strpos($column, '?') === FALSE || !$value)
 			return array($where . $column, $value);
 
