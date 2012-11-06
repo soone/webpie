@@ -101,8 +101,9 @@ class MysqlTest extends PHPUnit_Framework_TestCase
 		);
 	}
 
-	public function testDbCOU()
+	public function testUnrecommentQueryRs()
 	{
-		$this->assertEquals(1, $this->db->dbCOU('id, name', array(3, 'soone')));
+		$a = $this->db->unrecommentQueryRs('select * from friends limit 1');
+		$this->assertEquals(1, $a[0][0]);
 	}
 }

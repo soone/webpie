@@ -303,16 +303,6 @@ class Webpie_Dal_Mysql implements Webpie_Dal_Dbinterface
 		return $affecteds;
 	}
 
-	public function dbCOU($columns, $values)
-	{
-		//$sql = 'INSERT INTO ' . $this->curTable . '(' . $columns . ')VALUES(' . rtrim(str_repeat('?,', count($values)), ',') . ')';
-		//var_dump($sql);
-		//foreach($values as $v)
-		//{
-		//	$vals[]= $this->curDbObj->real_escape_string($v);
-		//}
-	}
-
 	/**
 	* @name setBindParams 用来设置prepare的时候需要bind_param的时候的引用
 	*
@@ -420,5 +410,22 @@ class Webpie_Dal_Mysql implements Webpie_Dal_Dbinterface
 		}
 
 		return array($where . $tempWhere, $value);
+	}
+
+	/**
+	 * @name unrecommentQueryRs 不建议使用的查询方法
+	 *
+	 * @param $sql
+	 * @param $rsType
+	 * @param $rsMode
+	 *
+	 * @return 
+	 */
+	public function unrecommentQueryRs($sql, $rsType = MYSQLI_NUM, $rsMode = MYSQLI_STORE_RESULT)
+	{
+		if(($rs = $this->curDbObj->query($sql, $rsMode)))
+			return $rs->fetch_all($rsType);
+		else
+			return FALSE;
 	}
 }
