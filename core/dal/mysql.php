@@ -424,7 +424,7 @@ class Webpie_Dal_Mysql implements Webpie_Dal_Dbinterface
 	public function unrecommentQueryRs($sql, $rsType = MYSQLI_NUM, $rsMode = MYSQLI_STORE_RESULT)
 	{
 		if(($rs = $this->curDbObj->query($sql, $rsMode)))
-			return $rs->fetch_all($rsType);
+			return ($rs instanceof MySQLi_Result) ? $rs->fetch_all($rsType) : $rs;
 		else
 			return FALSE;
 	}
