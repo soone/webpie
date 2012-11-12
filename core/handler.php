@@ -23,7 +23,7 @@ class Webpie_Handler
 		{
 			foreach($f[1] as $k => $v)
 			{
-				if(empty($f[0][$k]) && (empty($v['required']) || $v['required'] != 1))
+				if(!isset($f[0][$k]) && (empty($v['required']) || $v['required'] != 1))
 					continue;
 
 				$valid = new Webpie_Valid(empty($f[0][$k]) ? '' : $f[0][$k], $v);
