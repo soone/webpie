@@ -72,11 +72,11 @@ class Webpie_Valid
 				if(empty($this->validVar) || !count($this->validVar))
 				{
 					$this->alertMsg = $this->msg;
-					return false;
+					return FALSE;
 				}
 			}
 			
-			return true;
+			return TRUE;
 		}
 		else
 			throw new Webpie_Util_Exception('format error');
@@ -99,11 +99,11 @@ class Webpie_Valid
 				{
 					$varLen = strlen($var);
 					if($varLen >= $min && $varLen <= $max)
-						return true;
+						return TRUE;
 					else
 					{
 						$alertMsg = $msg;
-						return false;
+						return FALSE;
 					}
 				};
 
@@ -112,10 +112,10 @@ class Webpie_Valid
 			else
 			{
 				$mapRes = array_map($lenValid, $this->validVar);
-				if(in_array(false, $mapRes))
-					return false;
+				if(in_array(FALSE, $mapRes))
+					return FALSE;
 
-				return true;
+				return TRUE;
 			}
 		}
 		else
@@ -148,17 +148,17 @@ class Webpie_Valid
 		$range = &$this->range;
 		$rangeValid = function($var, $flag) use (&$range, &$msg, &$alertMsg)
 			{
-				$res = false;
+				$res = FALSE;
 				if($flag == 1)
 				{
 					$var = intval($var);
 					if($var > $range[0] && $var <= $range[1])
-						$res = true;
+						$res = TRUE;
 				}
 				else
 				{
 					if(in_array($var, $range))
-						$res = true;
+						$res = TRUE;
 				}
 
 				if(!$res)
@@ -177,10 +177,10 @@ class Webpie_Valid
 		else
 		{
 			$mapRes = array_map($rangeValid, $this->validVar);
-			if(in_array(false, $mapRes))
-				return false;
+			if(in_array(FALSE, $mapRes))
+				return FALSE;
 			else
-				return true;
+				return TRUE;
 		}
 	}
 
@@ -198,26 +198,26 @@ class Webpie_Valid
 			$var = &$this->validVar;
 			$mapFunc = function($func) use (&$var) {$var = call_user_func($func, $var);return $var;};
 			$mapRes = array_map($mapFunc, $expect);
-			if(in_array(false, $mapRes))
+			if(in_array(FALSE, $mapRes, TRUE))
 			{
 				$this->alertMsg = $this->msg;
-				return false;
+				return FALSE;
 			}
 			//return array_walk($expect, function($func, $key) use (&$var) {$var = call_user_func($func, $var);});
 		}
 		else if($expect)
 		{
 			$res = call_user_func($expect, $this->validVar);
-			if($res === false)
+			if($res === FALSE)
 			{
 				$this->alertMsg = $this->msg;
-				return false;
+				return FALSE;
 			}
 
 			$this->validVar = $res;
 		}
 
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -228,9 +228,9 @@ class Webpie_Valid
 	public function validEqualTo()
 	{
 		if($this->equalTo == NULL || $this->validVar == $this->equalTo)
-			return true;
+			return TRUE;
 
-		return false;
+		return FALSE;
 	}
 
 	/**
@@ -240,26 +240,26 @@ class Webpie_Valid
 	*/
 	public function toValid()
 	{
-		if($this->isRequired() === false)
-			return false;
+		if($this->isRequired() === FALSE)
+			return FALSE;
 
-		if($this->preExpect && $this->toApplyExpect($this->preExpect) === false)
-			return false;
+		if($this->preExpect && $this->toApplyExpect($this->preExpect) === FALSE)
+			return FALSE;
 
-		if($this->length && $this->validLength() === false)
-			return false;
+		if($this->length && $this->validLength() === FALSE)
+			return FALSE;
 
-		if($this->equalTo && $this->validEqualTo() === false)
-			return false;
+		if($this->equalTo && $this->validEqualTo() === FALSE)
+			return FALSE;
 
-		if($this->range && $this->validRange() === false)
-			return false;
+		if($this->range && $this->validRange() === FALSE)
+			return FALSE;
 
-		if($this->expect && $this->toApplyExpect($this->expect) === false)
-			return false;
+		if($this->expect && $this->toApplyExpect($this->expect) === FALSE)
+			return FALSE;
 
 		$this->setDefault();
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -357,7 +357,7 @@ class Webpie_Inputs
 		{
 			empty($var[$key]) ? $var[$key] = NULL : '';
 			$vObj = new Webpie_Valid($var[$key], $val);
-			if($vObj->toValid() === true)
+			if($vObj->toValid() === TRUE)
 				$this->gInputs[$varName][$key] = $vObj->getValidVar();
 			else
 				$this->sError[] = $vObj->getMsg();
@@ -425,35 +425,35 @@ class Webpie_Inputs
 	public static function validDate($var, $format = 'Y-m-d')
 	{
 		$sTime = strtotime($var);
-		if($sTime === false)
-			return false;
+		if($sTime === FALSE)
+			return FALSE;
 
 		if(date($format, strtotime($var)) == $var)
 			return $var;
 		else
-			return false;
+			return FALSE;
 	}
 
 	public static function validCnZip($var)
 	{
-		return preg_match('/^[\d]{6}$/', $var) ? $var : false;
+		return preg_match('/^[\d]{6}$/', $var) ? $var : FALSE;
 	}
 
 	public static function validCnPhone($var)
 	{
-		return preg_match('/^1[3|4|5|8][0-9]{9}$/', $var) ? $var : false;
+		return preg_match('/^1[3|4|5|8][0-9]{9}$/', $var) ? $var : FALSE;
 	}
 
 	public static function validCnTel($var)
 	{
-		return preg_match('/^((\+)?(0)?86(-)?)?([\d]{3,4}(-)?)?[\d]{7,8}$/', $var) ? $var : false;
+		return preg_match('/^((\+)?(0)?86(-)?)?([\d]{3,4}(-)?)?[\d]{7,8}$/', $var) ? $var : FALSE;
 	}
 
 	public static function validCardByLuhm($var)
 	{
 		$cLen = strlen($var);
 		if(!in_array($cLen, array(16, 19)))
-			return false;
+			return FALSE;
 
 		$i = 0;
 		$eCo = 0;
@@ -483,7 +483,7 @@ class Webpie_Inputs
 			$endNum = 0;
 
 		if($endNum != $var[$cLen-1])
-			return false;
+			return FALSE;
 		else
 			return $var;
 	}
@@ -497,7 +497,7 @@ class Webpie_Inputs
 
 	public static function validComPass($var, $length = array(6, 20))
 	{
-		return preg_match('/^[\d\w_\-\$!#%\^&\*\(\)\+<>\?\[\]]{' . $length[0] . ',' . $length[1] . '}$/', $var) ? $var : false;
+		return preg_match('/^[\d\w_\-\$!#%\^&\*\(\)\+<>\?\[\]]{' . $length[0] . ',' . $length[1] . '}$/', $var) ? $var : FALSE;
 	}
 
 	/**
@@ -515,7 +515,7 @@ class Webpie_Inputs
 		if($utf8Len > $gbkLen)
 			$length[1] = $length[1] + $utf8Len - $gbkLen;
 
-		return preg_match('/^([\d\w_\-\x80-\xff]{' . $length[0] . ',' . $length[1] . '})?$/si', $var) ? $var : false;
+		return preg_match('/^([\d\w_\-\x80-\xff]{' . $length[0] . ',' . $length[1] . '})?$/si', $var) ? $var : FALSE;
 	}
 
 	/**
