@@ -214,7 +214,7 @@ class Webpie_Dal_Mysql implements Webpie_Dal_Dbinterface
 		if(call_user_func_array(array($stmt, 'bind_result'), $field) === false)
 			throw new Webpie_Dal_Exception('Dal Db Error(' . $stmt->errno . '):' . $stmt->error);
 
-		$res = NULL;
+		$res = array();
 		while($stmt->fetch())
 		{
 			if(!empty($options['callback']) && is_callable($options['callback']))
