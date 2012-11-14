@@ -8,7 +8,7 @@ class Webpie_Helper
 		elseif(!empty($_SERVER['HTTP_CLIENT_IP']))
 			$onlineIp = $_SERVER['HTTP_CLIENT_IP'];
 		else
-			$onlineIp = $_SERVER['REMOTE_ADDR'];
+			$onlineIp = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '127.0.0.1';
 
 		return $onlineIp;
 	}
@@ -28,5 +28,51 @@ class Webpie_Helper
 			return implode('', $seed);
 		else
 			return implode('', array_slice($seed, 0, $len));
+	}
+
+	/**
+	 * @name getSession 
+	 *
+	 * @return 
+	 */
+	public static function getSession()
+	{
+		session_start();
+		return $_SESSION;
+	}
+
+	/**
+	 * @name isSSL 判断是否使用443端口
+	 *
+	 * @return 
+	 */
+	public static function isSSL()
+	{
+		return ($_SERVER['SERVER_PORT'] == 443) ? TRUE : FALSE;
+	}
+
+	/**
+	 * @name generateSn 
+	 *
+	 * @param $params
+	 * @param $secrect
+	 * @param $type
+	 *
+	 * @return 
+	 */
+	public static function generateSn($seed, $secrect, $type = 'sha1')
+	{
+		ksort($seed);
+		$sign = '';
+		foreach($seed as $k => $v)
+		{
+			if(is_array($v))
+				$sign .= implode($k . '[]', $v);
+			else
+				$sign .= $k . $v;
+		}
+
+		unset($k, $v);
+		return base64_encode(hash_hmac($type, $sign, $secrect));
 	}
 }
