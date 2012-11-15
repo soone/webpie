@@ -387,8 +387,8 @@ class Webpie_Dal_Mysql implements Webpie_Dal_Dbinterface
 		if(strpos($column, '?') === FALSE || !$value)
 			return array($where . $column, $value);
 
-		$whereArr = explode('?', $column, -1);
-		$sizeWhere = count($whereArr);
+		$whereArr = explode('?', $column);
+		$sizeWhere = count($whereArr) - 1;
 		$tempWhere = '';
 		for($i = 0; $i < $sizeWhere; $i++)
 		{
@@ -409,7 +409,7 @@ class Webpie_Dal_Mysql implements Webpie_Dal_Dbinterface
 				$tempWhere .= $whereArr[$i] . '?';
 		}
 
-		return array($where . $tempWhere, $value);
+		return array($where . $tempWhere . $whereArr[$sizeWhere], $value);
 	}
 
 	/**
