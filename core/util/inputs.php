@@ -69,7 +69,7 @@ class Webpie_Valid
 		{
 			if($this->required == 1)
 			{
-				if(empty($this->validVar) || !count($this->validVar))
+				if(!isset($this->validVar) || !count($this->validVar))
 				{
 					$this->alertMsg = $this->msg;
 					return FALSE;
