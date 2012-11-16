@@ -85,7 +85,7 @@ class Webpie_Config
 							break;
 						}
 						else
-							throw new Webpie_Config_Exception('配置属性不存在');
+							throw new Webpie_Config_Exception('无法获取' . $var . '配置');
 					}
 					$res = $res[$strVar];
 				}
@@ -96,7 +96,7 @@ class Webpie_Config
 		else if($val !== NULL)
 			return $val;
 		else
-			throw new Webpie_Config_Exception('配置属性不存在');
+			throw new Webpie_Config_Exception('无法获取' . $var . '配置');
 	}
 
 	/**
