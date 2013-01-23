@@ -97,7 +97,7 @@ class Webpie_Valid
 			$alertMsg = &$this->alertMsg;
 			$lenValid = function($var) use ($min, $max, &$msg, &$alertMsg)
 				{
-					$varLen = strlen($var);
+					$varLen = mb_strlen($var, 'utf8');
 					if($varLen >= $min && $varLen <= $max)
 						return TRUE;
 					else
