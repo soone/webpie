@@ -34,7 +34,7 @@ class Webpie
     */
     public function start()
     {
-		$uriPos = strrpos($_SERVER['REQUEST_URI'], '?');
+		$uriPos = strpos($_SERVER['REQUEST_URI'], '?');
         $reqUri = $uriPos ? substr($_SERVER['REQUEST_URI'], 0, $uriPos) : substr($_SERVER['REQUEST_URI'], 0);
         $url = $this->envConf->get('url');
         $handler = NULL;
